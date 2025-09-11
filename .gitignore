@@ -21,3 +21,6 @@ yarn-error.log*
 node_modules/
 build/
 dist/
+node_modules/
+build/
+dist/
