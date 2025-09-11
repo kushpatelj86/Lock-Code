@@ -1,0 +1,23 @@
+# Node dependencies
+node_modules/
+
+# Build folders
+build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+
+# Environment variables
+.env
+
+# Electron cache
+*.asar
+node_modules/
+build/
+dist/

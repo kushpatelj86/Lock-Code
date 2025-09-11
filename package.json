@@ -1,0 +1,38 @@
+{
+  "name": "lock-code",
+  "version": "1.0.0",
+  "main": "index.js",
+  
+  
+  "scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build",
+  "electron-dev": "electron .",
+  "package": "electron-builder",
+  "test": "react-scripts test"
+}
+,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kushpatelj86/Lock-Code.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kushpatelj86/Lock-Code/issues"
+  },
+  "homepage": "https://github.com/kushpatelj86/Lock-Code#readme",
+  "description": "",
+  "dependencies": {
+    "clipboard": "^2.0.11",
+    "crypto-js": "^4.2.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "electron": "^38.1.0",
+    "react-scripts": "^5.0.1"
+  }
+}
