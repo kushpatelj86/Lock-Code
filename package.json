@@ -2,15 +2,14 @@
   "name": "lock-code",
   "version": "1.0.0",
   "main": "index.js",
-  
-  
   "scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "electron-dev": "electron .",
-  "package": "electron-builder",
-  "test": "react-scripts test"
+  "start": "expo start",
+  "web": "expo start --web",
+  "expo-web": "expo start --web",
+  "electron": "concurrently \"npm:expo-web\" \"wait-on http://localhost:19006 && electron ./electron/main.js\"",
+  "build-electron": "electron-builder"
 }
+
 ,
   "repository": {
     "type": "git",
@@ -29,10 +28,16 @@
     "crypto-js": "^4.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-native-macos": "^0.79.0",
+    "react-native-web": "^0.21.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "electron": "^38.1.0",
-    "react-scripts": "^5.0.1"
-  }
+    "electron-builder": "^26.0.12",
+    "react-scripts": "^5.0.1",
+    "wait-on": "^8.0.4"
+  },
+  "type": "commonjs"
 }
