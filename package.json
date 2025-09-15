@@ -1,16 +1,14 @@
 {
   "name": "lock-code",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-  "start": "expo start",
-  "web": "expo start --web",
-  "expo-web": "expo start --web",
-  "electron": "concurrently \"npm:expo-web\" \"wait-on http://localhost:19006 && electron ./electron/main.js\"",
-  "build-electron": "electron-builder"
-}
-
-,
+    "start": "expo start",
+    "web": "expo start --web",
+    "expo-web": "expo start --web",
+    "electron": "concurrently \"npm:expo-web\" \"wait-on http://localhost:19006 && electron ./electron/main.js\"",
+    "build-electron": "electron-builder"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kushpatelj86/Lock-Code.git"
@@ -26,6 +24,7 @@
   "dependencies": {
     "clipboard": "^2.0.11",
     "crypto-js": "^4.2.0",
+    "expo": "^54.0.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-native-macos": "^0.79.0",
@@ -33,6 +32,8 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@types/react": "~19.1.10",
+    "@types/react-native": "^0.72.8",
     "concurrently": "^9.2.1",
     "electron": "^38.1.0",
     "electron-builder": "^26.0.12",
