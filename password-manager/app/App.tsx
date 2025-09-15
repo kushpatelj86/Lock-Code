@@ -2,10 +2,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
+import AddAccount from './AddAccount';
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
+  AddAccount: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -14,8 +16,9 @@ const linking = {
   prefixes: ['http://localhost:8081'], 
   config: {
     screens: {
-      Login: '',      
-      Home: 'home',   
+      Login: '',
+      Home: 'home',
+      AddAccount: 'add-account',
     },
   },
 };
@@ -29,7 +32,12 @@ export default function App() {
           component={LoginScreen}
           options={{ headerShown: false }}
         />
-       
+
+        <Stack.Screen
+          name="AddAccount"
+          component={AddAccount}
+          options={{ title: 'Add Account' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
