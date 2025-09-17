@@ -59,9 +59,6 @@ export default function AddAccount() {
           onChangeText={setExpiryDate}
           style={loginStyles.input}
         />
-
-       
-
       </View>
 
       <Text style={loginStyles.registrationLink}>Don't have an account? Register</Text>
