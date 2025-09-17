@@ -1,12 +1,23 @@
 import { StyleSheet } from 'react-native';
 
-export const loginStyles = StyleSheet.create({
+export const homescreenstyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#fff', 
+  },
+  title: {                
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subtitle: {            
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#555',
   },
   form: {
     backgroundColor: 'aquamarine',

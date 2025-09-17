@@ -19,7 +19,7 @@ export default function LoginScreen() {
 
   return (
   <View style={{ flex: 1 }}>
-    <Text>Login</Text>
+<Text style={{ textAlign: 'center' }}>Login</Text>
 
     <View style={loginStyles.container}>
       <View style={loginStyles.form}>
