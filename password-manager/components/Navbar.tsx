@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { styles } from '../styles/NavBarStyling'; // adjust path if needed
-
+import { styles } from './styles/NavBarStyling';
 export default function Navbar() {
   const router = useRouter();
 
@@ -16,7 +15,7 @@ export default function Navbar() {
         <Text style={styles.buttonText}>Add Account</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => router.push('/Vault')}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/VaultScreen')}>
         <Text style={styles.buttonText}>Vault</Text>
       </TouchableOpacity>
     </View>

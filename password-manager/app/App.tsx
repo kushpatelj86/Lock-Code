@@ -3,11 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import AddAccount from './AddAccount';
+import VaultScreen from './VaultScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   AddAccount: undefined;
+  VaultScreen: undefined;
+
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,6 +40,12 @@ export default function App() {
           name="AddAccount"
           component={AddAccount}
           options={{ title: 'Add Account' }}
+        />
+
+        <Stack.Screen
+          name="VaultScreen"
+          component={VaultScreen}
+          options={{ title: 'Vault Screen' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

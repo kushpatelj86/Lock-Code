@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import Navbar from '../components/NavBar'
+import Navbar from '../components/Navbar'
 import { homescreenstyles } from './styles/HomeScreenStyles';
 
 export default function HomeScreen() {
@@ -10,7 +10,6 @@ export default function HomeScreen() {
       <Text style={homescreenstyles.subtitle}>
         This is the place where you store all your information regarding user credentials.
       </Text>
-
       <Navbar />
     </View>
   );
