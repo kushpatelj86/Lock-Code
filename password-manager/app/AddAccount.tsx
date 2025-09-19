@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { loginStyles } from './styles/LoginStyles';
+import { AddAccountStyles } from './styles/AddAccountStyles';
 
 export default function AddAccount() {
   const [description, setDescription] = useState('');
@@ -10,58 +10,67 @@ export default function AddAccount() {
   const [url, setURL] = useState('');
   const [add_date, setAddDate] = useState('');
   const [expiry_date, setExpiryDate] = useState('');
+  const [notes, setNotes] = useState('');
 
   const router = useRouter();
 
   return (
-    <View style={loginStyles.container}>
-      <View style={loginStyles.form}>
+    <View style={AddAccountStyles.container}>
+      <View style={AddAccountStyles.form}>
 
-        <Text style={loginStyles.label}>URL</Text>
+        <Text style={AddAccountStyles.label}>URL</Text>
         <TextInput
           value={url}
           onChangeText={setURL}
-          style={loginStyles.input}
+          style={AddAccountStyles.input}
         />
 
-        <Text style={loginStyles.label}>Description</Text>
+        <Text style={AddAccountStyles.label}>Description</Text>
         <TextInput
           value={description}
           onChangeText={setDescription}
-          style={loginStyles.input}
+          style={AddAccountStyles.input}
         />
 
-        <Text style={loginStyles.label}>Username</Text>
+        <Text style={AddAccountStyles.label}>Username</Text>
         <TextInput
           value={username}
           onChangeText={setUsername}
-          style={loginStyles.input}
+          style={AddAccountStyles.input}
         />
 
-        <Text style={loginStyles.label}>Password</Text>
+        <Text style={AddAccountStyles.label}>Password</Text>
         <TextInput
           value={password}
           onChangeText={setPassword}
           secureTextEntry
-          style={loginStyles.input}
+          style={AddAccountStyles.input}
         />
 
-        <Text style={loginStyles.label}>Add Date</Text>
+        <Text style={AddAccountStyles.label}>Add Date</Text>
         <TextInput
           value={add_date}
           onChangeText={setAddDate}
-          style={loginStyles.input}
+          style={AddAccountStyles.input}
         />
 
-        <Text style={loginStyles.label}>Expiry Date</Text>
+        <Text style={AddAccountStyles.label}>Expiry Date</Text>
         <TextInput
           value={expiry_date}
           onChangeText={setExpiryDate}
-          style={loginStyles.input}
+          style={AddAccountStyles.input}
+        />
+
+
+         <Text style={AddAccountStyles.label}>Notes</Text>
+        <TextInput
+          value={notes}
+          onChangeText={setNotes}
+          style={AddAccountStyles.input}
         />
       </View>
 
-      <Text style={loginStyles.registrationLink}>Don't have an account? Register</Text>
+      <Text style={AddAccountStyles.registrationLink}>Don't have an account? Register</Text>
     </View>
   );
 }

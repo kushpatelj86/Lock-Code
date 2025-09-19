@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export const account = StyleSheet.create({
+export const AddAccountStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -34,6 +34,18 @@ export const account = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
   },
+
+notesInput:{
+     backgroundColor: 'aliceblue',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+    height: 120,           
+    fontSize: 16,         
+    textAlignVertical: 'top', 
+},
+
+
   button: {
     backgroundColor: 'aliceblue',
     borderRadius: 8,
