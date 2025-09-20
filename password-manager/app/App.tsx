@@ -4,24 +4,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './LoginScreen';
 import AddAccount from './AddAccount';
 import VaultScreen from './VaultScreen';
+import SignUp from './SignUpScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Home: undefined;
   AddAccount: undefined;
   VaultScreen: undefined;
-
+  SignUp: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const linking = {
-  prefixes: ['http://localhost:8081'], 
+  prefixes: ['http://localhost:8081'],
   config: {
     screens: {
       Login: '',
       Home: 'home',
       AddAccount: 'add-account',
+      VaultScreen: 'vault-screen',
+      SignUp: 'sign-up',
     },
   },
 };
@@ -34,6 +37,12 @@ export default function App() {
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="SignUp" 
+          component={SignUp}
+          options={{ title: 'Sign Up' }}
         />
 
         <Stack.Screen

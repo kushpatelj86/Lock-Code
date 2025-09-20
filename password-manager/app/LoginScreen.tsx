@@ -2,10 +2,21 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { loginStyles } from './styles/LoginStyles'; 
+import {useNavigation} from '@react-navigation/native';
+import { RootStackParamList } from './App';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
+
+
 export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const [username, setUsername] = useState('');
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+
 
   function handleLogin() {
     if (password.length > 0) 
@@ -16,6 +27,12 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Please enter a password');
     }
   }
+
+
+  function navigateToSignUp() {
+      navigation.navigate('SignUp'); 
+  }
+
 
   return (
   <View style={{ flex: 1 }}>
@@ -46,6 +63,10 @@ export default function LoginScreen() {
       <Text style={loginStyles.registrationLink}>
         Don't have an account? Register
       </Text>
+      <TouchableOpacity onPress={navigateToSignUp} style={loginStyles.button}>
+          <Text style={loginStyles.buttonText}>Don't have an account? Sign Up</Text>
+        </TouchableOpacity>
+
     </View>
   </View>
 );

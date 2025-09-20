@@ -21,7 +21,8 @@ export async function createUserTable () {
     
     export async function createPasswordTable() { 
       const db = await SQLite.openDatabaseAsync('password_manager.db'); 
-      const query = ` CREATE TABLE IF NOT EXISTS passwords ( password_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+      const query = ` CREATE TABLE IF NOT EXISTS passwords 
+      ( password_id INTEGER PRIMARY KEY AUTOINCREMENT, 
       user_id INTEGER NOT NULL, account_name TEXT NOT NULL, 
       account_username TEXT NOT NULL, encrypted_pass TEXT NOT NULL, 
       iv TEXT NOT NULL, url TEXT, add_date TEXT, expiry_date TEXT, 
