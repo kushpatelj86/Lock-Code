@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { loginStyles } from './styles/LoginStyles'; 
+import { loginStyles } from './styles/LoginStyles';
+import { insertMasterUser } from './db';
 
 export default function SignUp() {
   const router = useRouter();
@@ -12,20 +13,36 @@ export default function SignUp() {
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  function handleSignUp() {
-    if (!username || !password || !email) 
-    {
+  async function handleSignUp() {
+    if (!username || !password || !email) {
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
     }
-    Alert.alert('Success', 'Account created!');
-    router.push('/login'); 
-  };
+
+    try {
+      const inserted = await insertMasterUser(
+        username,
+        password,
+        firstName,
+        lastName,
+        phoneNumber
+      );
+
+      if (inserted) {
+        Alert.alert('Success', 'Account created!');
+        router.push('/login');
+      } else {
+        Alert.alert('Error', 'Username already exists.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
+    }
+  }
 
   return (
     <View style={{ flex: 1 }}>
       <Text style={loginStyles.title}>Sign Up</Text>
-
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
           <Text style={loginStyles.label}>Username</Text>
