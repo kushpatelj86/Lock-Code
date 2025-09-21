@@ -52,14 +52,14 @@ export async function createUserTable () {
 
         const db = await SQLite.openDatabaseAsync('password_manager.db'); 
         const query = `
-    INSERT OR IGNORE INTO USER 
+    INSERT INTO USER 
       (username, master_password, first_name, last_name, phone_number)
     VALUES (
       '${username}',
       '${master_password}',
-      '${first_name || ''}',
-      '${last_name || ''}',
-      '${phone_number || ''}'
+      '${first_name}',
+      '${last_name}',
+      '${phone_number}'
     );
   `;
 
