@@ -1,26 +1,35 @@
-import * as SQLite from 'expo-sqlite'; 
-export async function createUserTable () { 
-  const db = await SQLite.openDatabaseAsync('password_manager.db'); 
-  const query = `CREATE TABLE IF NOT EXISTS USER (
-   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-   username TEXT NOT NULL UNIQUE,
-    master_password TEXT NOT NULL, 
-   first_name TEXT, 
-   last_name TEXT, 
-   phone_number TEXT );`; 
-   try { 
-    const response = await db.execAsync(query); 
-    console.log("Database created", response); 
-  } 
-  catch (error) { 
-    console.error("Error creating database:", error);
-   } 
-  }; 
+import * as SQLite from 'expo-sqlite';
+
+
+
+
+
+export function createUserTable() {
+  const db = SQLite.openDatabaseSync('password_manager.db') as any; 
+  const query = `
+    CREATE TABLE IF NOT EXISTS USER (
+      user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL UNIQUE,
+      master_password TEXT NOT NULL,
+      first_name TEXT,
+      last_name TEXT,
+      phone_number TEXT
+    );
+  `;
+
+  try {
+    db.executeSql(query); 
+    console.log('USER table created successfully');
+  } catch (error) {
+    console.error('Error creating USER table', error);
+  }
+}
     
     
     
-    export async function createPasswordTable() { 
-        const db = await SQLite.openDatabaseAsync('password_manager.db'); 
+    export  function createPasswordTable() { 
+        const db = SQLite.openDatabaseSync('password_manager.db') as any;
+        
         const query = ` CREATE TABLE IF NOT EXISTS passwords 
         ( password_id INTEGER PRIMARY KEY AUTOINCREMENT, 
         user_id INTEGER NOT NULL, account_name TEXT NOT NULL, 
@@ -29,19 +38,19 @@ export async function createUserTable () {
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) 
         REFERENCES users(user_id) ); `; 
-          try { 
-          const response = await db.execAsync(query); 
-          console.log("Database created", response); 
-        } 
-        catch (error) {
-          console.error("Error creating database:", error); 
-        } 
+           try {
+      db.executeSql(query);
+      console.log('USER table created successfully');
+    } catch (error) {
+      console.error('Error creating USER table', error);
+    }
+
       } 
         
       export async function initDatabase() { 
-        await SQLite.openDatabaseAsync('password_manager.db'); 
-        await createUserTable(); 
-        await createPasswordTable();
+         const db = SQLite.openDatabaseSync('password_manager.db') as any; 
+         createUserTable(); 
+         createPasswordTable();
        }
 
 
