@@ -18,21 +18,38 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-
-
 export default function App() {
   useEffect(() => {
     initDatabase();
   }, []);
 
   return (
-    <NavigationContainer >
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ title: 'Sign Up' }} />
-        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="AddAccount" component={AddAccount} options={{ title: 'Add Account' }} />
-        <Stack.Screen name="VaultScreen" component={VaultScreen} options={{ title: 'Vault Screen' }} />
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Login"        // Login is root
+        screenOptions={{ headerShown: false }} // Default: no header
+      >
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen 
+          name="SignUpScreen" 
+          component={SignUpScreen} 
+          options={{ headerShown: true, title: 'Sign Up' }}
+        />
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{ headerShown: true, title: 'Home' }}
+        />
+        <Stack.Screen 
+          name="AddAccount" 
+          component={AddAccount} 
+          options={{ headerShown: true, title: 'Add Account' }}
+        />
+        <Stack.Screen 
+          name="VaultScreen" 
+          component={VaultScreen} 
+          options={{ headerShown: true, title: 'Vault Screen' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

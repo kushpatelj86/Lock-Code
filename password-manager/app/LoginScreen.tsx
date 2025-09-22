@@ -21,7 +21,7 @@ export default function LoginScreen() {
 
     try {
       // const isValid = await verifyMasterUser(username, password);
-      const isValid = true; // For testing
+      const isValid = false; // For testing
 
       if (isValid) {
         Alert.alert('Success', 'Logged in!');
