@@ -5,7 +5,7 @@ import * as SQLite from 'expo-sqlite';
 
 
 export function createUserTable() {
-  const db = SQLite.openDatabaseSync('password_manager.db') as any; 
+  const db = SQLite.openDatabaseSync('password_manager.db'); 
   const query = `
     CREATE TABLE IF NOT EXISTS USER (
       user_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,7 +18,7 @@ export function createUserTable() {
   `;
 
   try {
-    db.executeSql(query); 
+    db.execSync(query); 
     console.log('USER table created successfully');
   } catch (error) {
     console.error('Error creating USER table', error);
@@ -28,7 +28,7 @@ export function createUserTable() {
     
     
     export  function createPasswordTable() { 
-        const db = SQLite.openDatabaseSync('password_manager.db') as any;
+        const db = SQLite.openDatabaseSync('password_manager.db');
         
         const query = ` CREATE TABLE IF NOT EXISTS passwords 
         ( password_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -39,7 +39,7 @@ export function createUserTable() {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) 
         REFERENCES users(user_id) ); `; 
            try {
-      db.executeSql(query);
+      db.execSync(query);
       console.log('USER table created successfully');
     } catch (error) {
       console.error('Error creating USER table', error);
@@ -59,7 +59,7 @@ export function createUserTable() {
 
     export async function insertMasterUser(username: string, master_password: string, first_name?: string, last_name?: string, phone_number?: string) {
 
-        const db = await SQLite.openDatabaseAsync('password_manager.db'); 
+        const db =  SQLite.openDatabaseSync('password_manager.db'); 
         const query = `
     INSERT INTO USER 
       (username, master_password, first_name, last_name, phone_number)
@@ -72,7 +72,7 @@ export function createUserTable() {
     );
   `;
 
-        const response = await db.execAsync(query); 
+        const response =  db.execSync(query); 
 
           
 

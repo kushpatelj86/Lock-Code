@@ -2,11 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
-// import { insertMasterUser } from '../utils/database'; // Uncomment when ready
+import { insertMasterUser } from '../utils/database'; 
 
-type SignUpScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUpScreen'>;
+// 👇 Define your RootStackParamList here or import it from a central types file
+export type RootStackParamList = {
+  LoginScreen: undefined;
+  SignUpScreen: undefined;
+  // Add other screens here if needed
+};
+
+type SignUpScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'SignUpScreen'
+>;
 
 export default function SignUpScreen() {
   const navigation = useNavigation<SignUpScreenNavigationProp>();
@@ -24,13 +33,19 @@ export default function SignUpScreen() {
     }
 
     try {
-      // const inserted = await insertMasterUser(username, password, firstName, lastName, phoneNumber);
-      const inserted = true; // For testing
+      const inserted = await insertMasterUser(
+        username,
+        password,
+        firstName,
+        lastName,
+        phoneNumber
+      );
 
-      if (inserted) {
+      if (inserted !== null) {
         Alert.alert('Success', 'Account created!');
-        navigation.navigate('Login');
-      } else {
+        navigation.navigate('LoginScreen');
+      } 
+      else {
         Alert.alert('Error', 'Username already exists.');
       }
     } catch (error) {
@@ -45,29 +60,59 @@ export default function SignUpScreen() {
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
           <Text style={loginStyles.label}>Username</Text>
-          <TextInput value={username} onChangeText={setUsername} style={loginStyles.input} />
+          <TextInput
+            value={username}
+            onChangeText={setUsername}
+            style={loginStyles.input}
+          />
 
           <Text style={loginStyles.label}>Master Password</Text>
-          <TextInput value={password} onChangeText={setPassword} secureTextEntry style={loginStyles.input} />
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={loginStyles.input}
+          />
 
           <Text style={loginStyles.label}>First Name</Text>
-          <TextInput value={firstName} onChangeText={setFirstName} style={loginStyles.input} />
+          <TextInput
+            value={firstName}
+            onChangeText={setFirstName}
+            style={loginStyles.input}
+          />
 
           <Text style={loginStyles.label}>Last Name</Text>
-          <TextInput value={lastName} onChangeText={setLastName} style={loginStyles.input} />
+          <TextInput
+            value={lastName}
+            onChangeText={setLastName}
+            style={loginStyles.input}
+          />
 
           <Text style={loginStyles.label}>Email</Text>
-          <TextInput value={email} onChangeText={setEmail} style={loginStyles.input} />
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            style={loginStyles.input}
+          />
 
           <Text style={loginStyles.label}>Phone Number</Text>
-          <TextInput value={phoneNumber} onChangeText={setPhoneNumber} style={loginStyles.input} />
+          <TextInput
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            style={loginStyles.input}
+          />
 
           <TouchableOpacity onPress={handleSignUp} style={loginStyles.button}>
             <Text style={loginStyles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Login')} style={loginStyles.button}>
-            <Text style={loginStyles.buttonText}>Already have an account? Log In</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('LoginScreen')}
+            style={loginStyles.button}
+          >
+            <Text style={loginStyles.buttonText}>
+              Already have an account? Log In
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
