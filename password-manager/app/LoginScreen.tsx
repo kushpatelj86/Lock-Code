@@ -6,7 +6,7 @@ import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
 // import { verifyMasterUser } from '../utils/database'; // Uncomment when ready
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -25,7 +25,7 @@ export default function LoginScreen() {
 
       if (isValid) {
         Alert.alert('Success', 'Logged in!');
-        navigation.navigate('Home');
+        navigation.navigate('HomeScreen');
       } else {
         Alert.alert('Error', 'Invalid username or password');
       }
