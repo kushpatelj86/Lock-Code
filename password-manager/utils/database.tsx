@@ -40,9 +40,9 @@ export function createUserTable() {
         REFERENCES users(user_id) ); `; 
            try {
       db.execSync(query);
-      console.log('USER table created successfully');
+      console.log('Password table created successfully');
     } catch (error) {
-      console.error('Error creating USER table', error);
+      console.error('Error creating PASSWORD table', error);
     }
 
       } 
