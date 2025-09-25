@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
-// import { verifyMasterUser } from '../utils/database'; // Uncomment when ready
+import { verifyMasterUser } from '../utils/database'; // Uncomment when ready
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
@@ -20,10 +20,9 @@ export default function LoginScreen() {
     }
 
     try {
-      // const isValid = await verifyMasterUser(username, password);
-      const isValid = false; // For testing
+      const isValid = verifyMasterUser(username, password);
 
-      if (isValid) {
+      if (isValid !== null) {
         Alert.alert('Success', 'Logged in!');
         navigation.navigate('HomeScreen');
       } else {

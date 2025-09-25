@@ -72,10 +72,36 @@ export function createUserTable() {
     );
   `;
 
-        const response =  db.execSync(query); 
+       try {
+        db.execSync(query);
+      console.log('User sucesfully inserted');
+    } catch (error) {
+      console.error('Error inserting user', error);
+    }
+        
+}
 
-          
+
+
+    export async function verifyMasterUser(username: string, master_password: string) {
+      const db =  SQLite.openDatabaseSync('password_manager.db'); 
+ const query = `
+    SELECT user_id FROM USER WHERE
+      user_name = '${username}',  master_password = '${master_password}'
+    );
+  `;
 
 
 
-       }
+       try {
+        db.execSync(query);
+      console.log('User sucesfully logged in');
+    } catch (error) {
+      console.error('Error logging user', error);
+    }
+              
+
+
+
+
+    }
