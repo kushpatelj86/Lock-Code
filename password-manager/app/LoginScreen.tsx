@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
-import { verifyMasterUser } from '../utils/database'; // Uncomment when ready
+import { verifyMasterUser } from '../utils/database'; 
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
