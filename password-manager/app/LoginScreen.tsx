@@ -20,16 +20,16 @@ export default function LoginScreen() {
     }
 
     try {
-      const isValid = verifyMasterUser(username, password);
+      const isValid = await verifyMasterUser(username, password);
 
-      if (isValid !== null) {
+      if (isValid) {
         Alert.alert('Success', 'Logged in!');
         navigation.navigate('HomeScreen');
       } else {
         Alert.alert('Error', 'Invalid username or password');
       }
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
       Alert.alert('Error', 'Something went wrong. Try again.');
     }
   }
@@ -44,10 +44,21 @@ export default function LoginScreen() {
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
           <Text style={loginStyles.label}>Username</Text>
-          <TextInput value={username} onChangeText={setUsername} style={loginStyles.input} />
+          <TextInput
+            value={username}
+            onChangeText={setUsername}
+            style={loginStyles.input}
+            autoCapitalize="none"
+          />
 
           <Text style={loginStyles.label}>Master Password</Text>
-          <TextInput value={password} onChangeText={setPassword} secureTextEntry style={loginStyles.input} />
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            style={loginStyles.input}
+            autoCapitalize="none"
+          />
 
           <TouchableOpacity onPress={handleLogin} style={loginStyles.button}>
             <Text style={loginStyles.buttonText}>Login</Text>

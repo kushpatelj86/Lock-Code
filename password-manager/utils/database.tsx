@@ -63,6 +63,17 @@ export function createUserTable() {
     export async function insertMasterUser(username: string, master_password: string, first_name?: string, last_name?: string, phone_number?: string) {
 
         const db =  SQLite.openDatabaseSync('password_manager.db'); 
+
+         const existing = db.getFirstSync(
+          `SELECT user_id FROM USER WHERE username = ?`,
+          [username]
+        );
+
+        if (existing) {
+          console.error("Username already exists");
+          return { success: false, message: "Username already exists" };
+        }
+        
         const query = `
     INSERT INTO USER 
       (username, master_password, first_name, last_name, phone_number)
@@ -91,20 +102,17 @@ export function createUserTable() {
  const query = `
     SELECT user_id FROM USER WHERE
       user_name = '${username}' AND  master_password = '${master_password}'
-    );
-  `;
-
-
+    ); `;
 
        try {
         db.execSync(query);
       console.log('User sucesfully logged in');
+      return true
     } catch (error) {
       console.error('Error logging user', error);
+      return false;
     }
-              
-
-
+            
 
 
     }
