@@ -38,6 +38,39 @@ export function createUserTable() {
   }
 }
 
+export  function createPasswordTable() { 
+        const db = SQLite.openDatabaseSync('password_manager.db');
+        
+        const query = ` CREATE TABLE IF NOT EXISTS passwords 
+        ( password_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        user_id INTEGER NOT NULL, account_name TEXT NOT NULL, 
+        account_username TEXT NOT NULL, encrypted_pass TEXT NOT NULL, 
+        iv TEXT NOT NULL, url TEXT, add_date TEXT, expiry_date TEXT, 
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) 
+        REFERENCES users(user_id) ); `; 
+           try {
+      db.execSync(query);
+      console.log('Password table created successfully');
+    } catch (error) {
+      console.error('Error creating PASSWORD table', error);
+    }
+
+      } 
+        
+
+
+export async function initDatabase() { 
+         const db = SQLite.openDatabaseSync('password_manager.db') as any; 
+         createUserTable(); 
+         createPasswordTable();
+}
+
+
+
+
+
+
 export async function insertMasterUser(
   username: string,
   master_password: string,
