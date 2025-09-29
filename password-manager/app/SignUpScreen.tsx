@@ -41,7 +41,7 @@ export default function SignUpScreen() {
         phoneNumber
       );
 
-      if (inserted !== null) {
+      if (inserted?.success === true) {
         Alert.alert('Success', 'Account created!');
         navigation.navigate('LoginScreen');
       } 

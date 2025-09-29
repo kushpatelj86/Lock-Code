@@ -6,7 +6,10 @@ import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
 import { verifyMasterUser } from '../utils/database'; 
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
+type LoginScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'LoginScreen'
+>;
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -21,7 +24,6 @@ export default function LoginScreen() {
 
     try {
       const isValid = await verifyMasterUser(username, password);
-
       if (isValid) {
         Alert.alert('Success', 'Logged in!');
         navigation.navigate('HomeScreen');
@@ -40,7 +42,9 @@ export default function LoginScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <Text style={{ textAlign: 'center', fontSize: 24, marginVertical: 20 }}>Login</Text>
+      <Text style={{ textAlign: 'center', fontSize: 24, marginVertical: 20 }}>
+        Login
+      </Text>
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
           <Text style={loginStyles.label}>Username</Text>
@@ -65,7 +69,9 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={navigateToSignUp} style={loginStyles.button}>
-            <Text style={loginStyles.buttonText}>Don't have an account? Sign Up</Text>
+            <Text style={loginStyles.buttonText}>
+              Don't have an account? Sign Up
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
