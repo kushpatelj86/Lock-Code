@@ -25,14 +25,18 @@ export default function LoginScreen() {
 
     try {
       const isValid = await verifyMasterUser(username, password);
-      if (isValid) {
+      if (isValid && isValid.userId) {
         await AsyncStorage.setItem('loggedInUser', username);
+        await AsyncStorage.setItem('loggedInUserId', String(isValid.userId)); 
 
         Alert.alert('Success', 'Logged in!');
         navigation.navigate('HomeScreen');
-      } else {
+      } 
+      else {
         Alert.alert('Error', 'Invalid username or password');
       }
+
+
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', 'Something went wrong. Try again.');

@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AddAccountStyles } from './styles/AddAccountStyles';
 import { insertPassword } from '../utils/database'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddAccount() {
   const [description, setDescription] = useState('');
@@ -27,6 +28,13 @@ export default function AddAccount() {
     return;
   }
 
+
+  const storedUserId = await AsyncStorage.getItem('loggedInUserId');
+    if (!storedUserId) {
+      Alert.alert('Error', 'No logged in user found.');
+      return;
+    }
+
   try {
     const inserted = await insertPassword(
       1,
@@ -40,8 +48,8 @@ export default function AddAccount() {
 
     if (inserted.success) {
       Alert.alert('Success', 'Account created!');
-      router.push('/LoginScreen');
-    } else {
+    } 
+    else {
       Alert.alert('Error', inserted.message);
     }
   } catch (error) {

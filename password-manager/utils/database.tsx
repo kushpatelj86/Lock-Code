@@ -11,6 +11,7 @@ export function createUserTable() {
       user_id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL UNIQUE,
       master_password TEXT NOT NULL,
+      salt TEXT NOT NULL,
       first_name TEXT,
       last_name TEXT,
       phone_number TEXT
@@ -86,8 +87,8 @@ export async function insertMasterUser(
   const hashedPassword = await hashPassword(master_password, salt);
 
   const query = `
-    INSERT INTO USER (username, master_password, first_name, last_name, phone_number)
-    VALUES ('${username}', '${hashedPassword}', '${first_name}', '${last_name}', '${phone_number}');
+    INSERT INTO USER (username, master_password, salt, first_name, last_name, phone_number)
+    VALUES ('${username}', '${hashedPassword}','${salt}' ,'${first_name}', '${last_name}', '${phone_number}');
   `;
 
   try {
@@ -127,7 +128,6 @@ export async function verifyMasterUser(username: string, master_password: string
     return { success: false, message: 'Login failed due to error' };
   }
 }
-
 
 
 export async function insertPassword(
