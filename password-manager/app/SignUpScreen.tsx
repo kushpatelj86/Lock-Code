@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginStyles } from './styles/LoginStyles'; 
 import { insertMasterUser } from '../utils/database'; 
 
-// 👇 Define your RootStackParamList here or import it from a central types file
 export type RootStackParamList = {
   LoginScreen: undefined;
   SignUpScreen: undefined;
-  // Add other screens here if needed
 };
 
 type SignUpScreenNavigationProp = NativeStackNavigationProp<
@@ -41,11 +40,15 @@ export default function SignUpScreen() {
         phoneNumber
       );
 
-      if (inserted?.success === true) {
+      if (inserted?.success === true) 
+        {
+        await AsyncStorage.setItem('username', username);
+
         Alert.alert('Success', 'Account created!');
         navigation.navigate('LoginScreen');
       } 
-      else {
+      else 
+        {
         Alert.alert('Error', 'Username already exists.');
       }
     } catch (error) {

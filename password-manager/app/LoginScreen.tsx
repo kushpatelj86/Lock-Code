@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
 import { verifyMasterUser } from '../utils/database'; 
@@ -25,6 +26,8 @@ export default function LoginScreen() {
     try {
       const isValid = await verifyMasterUser(username, password);
       if (isValid) {
+        await AsyncStorage.setItem('loggedInUser', username);
+
         Alert.alert('Success', 'Logged in!');
         navigation.navigate('HomeScreen');
       } else {
@@ -35,6 +38,21 @@ export default function LoginScreen() {
       Alert.alert('Error', 'Something went wrong. Try again.');
     }
   }
+
+  async function checkLoggedInUser() {
+    try {
+      const storedUser = await AsyncStorage.getItem('loggedInUser');
+      if (storedUser) {
+        navigation.navigate('HomeScreen');
+      }
+    } catch (error) {
+      console.error('Error reading local storage:', error);
+    }
+  }
+
+  React.useEffect(() => {
+    checkLoggedInUser();
+  }, []);
 
   function navigateToSignUp() {
     navigation.navigate('SignUpScreen');

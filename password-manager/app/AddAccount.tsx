@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AddAccountStyles } from './styles/AddAccountStyles';
+import { insertPassword } from '../utils/database'; 
 
 export default function AddAccount() {
   const [description, setDescription] = useState('');
@@ -13,6 +14,43 @@ export default function AddAccount() {
   const [notes, setNotes] = useState('');
 
   const router = useRouter();
+
+
+
+
+    async function handleAddAccount() {
+
+
+     const encrypted_password = password;
+  if (!description || !username || !password || !url || !add_date || !expiry_date) {
+    Alert.alert('Error', 'Please fill in all required fields.');
+    return;
+  }
+
+  try {
+    const inserted = await insertPassword(
+      1,
+      description,
+      username,
+      encrypted_password,
+      url,
+      add_date,
+      expiry_date
+    );
+
+    if (inserted.success) {
+      Alert.alert('Success', 'Account created!');
+      router.push('/LoginScreen');
+    } else {
+      Alert.alert('Error', inserted.message);
+    }
+  } catch (error) {
+    console.error(error);
+    Alert.alert('Error', 'Something went wrong. Try again.');
+  }
+}
+
+
 
   return (
     <View style={AddAccountStyles.container}>

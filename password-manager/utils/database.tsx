@@ -1,21 +1,8 @@
 import * as SQLite from 'expo-sqlite';
 import * as Crypto from 'expo-crypto';
+import { hashPassword, generateSalt } from './hashing';  
 
-async function hashPassword(password: string, salt: string) {
-  return await Crypto.digestStringAsync(
-    Crypto.CryptoDigestAlgorithm.SHA256,
-    salt + password
-  );
-}
 
-function generateSalt(length = 16) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
 
 export function createUserTable() {
   const db = SQLite.openDatabaseSync('password_manager.db');
@@ -24,7 +11,6 @@ export function createUserTable() {
       user_id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL UNIQUE,
       master_password TEXT NOT NULL,
-      salt TEXT NOT NULL,
       first_name TEXT,
       last_name TEXT,
       phone_number TEXT
@@ -41,14 +27,21 @@ export function createUserTable() {
 export  function createPasswordTable() { 
         const db = SQLite.openDatabaseSync('password_manager.db');
         
-        const query = ` CREATE TABLE IF NOT EXISTS passwords 
-        ( password_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        user_id INTEGER NOT NULL, account_name TEXT NOT NULL, 
-        account_username TEXT NOT NULL, encrypted_pass TEXT NOT NULL, 
-        iv TEXT NOT NULL, url TEXT, add_date TEXT, expiry_date TEXT, 
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) 
-        REFERENCES users(user_id) ); `; 
+        const query = ` CREATE TABLE IF NOT EXISTS passwords (
+    password_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    account_name TEXT NOT NULL,
+    account_username TEXT NOT NULL,
+    encrypted_pass TEXT NOT NULL,
+    iv TEXT NOT NULL,
+    url TEXT,
+    add_date TEXT,
+    expiry_date TEXT,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);`; 
            try {
       db.execSync(query);
       console.log('Password table created successfully');
@@ -93,8 +86,8 @@ export async function insertMasterUser(
   const hashedPassword = await hashPassword(master_password, salt);
 
   const query = `
-    INSERT INTO USER (username, master_password, salt, first_name, last_name, phone_number)
-    VALUES ('${username}', '${hashedPassword}', '${salt}', '${first_name}', '${last_name}', '${phone_number}');
+    INSERT INTO USER (username, master_password, first_name, last_name, phone_number)
+    VALUES ('${username}', '${hashedPassword}', '${first_name}', '${last_name}', '${phone_number}');
   `;
 
   try {
@@ -110,7 +103,7 @@ export async function insertMasterUser(
 export async function verifyMasterUser(username: string, master_password: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
-  const query = `SELECT user_id, master_password, salt FROM USER WHERE username = ?;`;
+  const query = `SELECT user_id, master_password FROM USER WHERE username = ?;`;
 
   try {
     const user: any = db.getFirstSync(query, [username]); 
@@ -142,7 +135,6 @@ export async function insertPassword(
   description: string,
   username: string,
   encryptedPassword: string,
-  iv: string,
   url?: string,
   add_date?: string,
   expiry_date?: string
@@ -163,8 +155,8 @@ export async function insertPassword(
   }
 
   const query = `
-    INSERT INTO PASSWORD (user_id, account_name, account_username, encrypted_pass, iv, url, add_date, expiry_date)
-    VALUES ('${userId}', '${description}', '${username}', '${encryptedPassword}', '${iv}', '${url}', '${add_date}', '${expiry_date}');
+    INSERT INTO PASSWORD (user_id, account_name, account_username, encrypted_pass, url, add_date, expiry_date)
+    VALUES ('${userId}', '${description}', '${username}', '${encryptedPassword}', '${url}', '${add_date}', '${expiry_date}');
   `;
 
   try {
