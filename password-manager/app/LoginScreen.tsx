@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,33 +15,12 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
-  async function handleLogin() {
-    if (!username || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-
-    try {
-      const isValid = await verifyMasterUser(username, password);
-      if (isValid && isValid.userId) {
-        await AsyncStorage.setItem('loggedInUser', username);
-        await AsyncStorage.setItem('loggedInUserId', String(isValid.userId)); 
-
-        Alert.alert('Success', 'Logged in!');
-        navigation.navigate('HomeScreen');
-      } 
-      else {
-        Alert.alert('Error', 'Invalid username or password');
-      }
-
-
-    } catch (error) {
-      console.error('Login error:', error);
-      Alert.alert('Error', 'Something went wrong. Try again.');
-    }
-  }
+  useEffect(() => {
+    checkLoggedInUser();
+  }, []);
 
   async function checkLoggedInUser() {
     try {
@@ -54,19 +33,41 @@ export default function LoginScreen() {
     }
   }
 
-  React.useEffect(() => {
-    checkLoggedInUser();
-  }, []);
+  async function handleLogin() {
+    if (!username.trim() || !password.trim()) {
+      Alert.alert('Error', 'Please fill in all fields.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await verifyMasterUser(username.trim(), password);
+      
+      if (result?.success && result.userId) {
+        await AsyncStorage.setItem('loggedInUser', username.trim());
+        await AsyncStorage.setItem('loggedInUserId', String(result.userId));
+
+        Alert.alert('Success', 'Logged in!');
+        navigation.navigate('HomeScreen');
+      } else {
+        Alert.alert('Error', result?.message || 'Invalid username or password.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function navigateToSignUp() {
     navigation.navigate('SignUpScreen');
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <Text style={{ textAlign: 'center', fontSize: 24, marginVertical: 20 }}>
-        Login
-      </Text>
+    <View style={{ flex: 1, paddingHorizontal: 20 }}>
+      <Text style={{ textAlign: 'center', fontSize: 28, marginVertical: 30 }}>Login</Text>
+
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
           <Text style={loginStyles.label}>Username</Text>
@@ -75,6 +76,7 @@ export default function LoginScreen() {
             onChangeText={setUsername}
             style={loginStyles.input}
             autoCapitalize="none"
+            autoCorrect={false}
           />
 
           <Text style={loginStyles.label}>Master Password</Text>
@@ -86,8 +88,16 @@ export default function LoginScreen() {
             autoCapitalize="none"
           />
 
-          <TouchableOpacity onPress={handleLogin} style={loginStyles.button}>
-            <Text style={loginStyles.buttonText}>Login</Text>
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={loginStyles.button}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={loginStyles.buttonText}>Login</Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity onPress={navigateToSignUp} style={loginStyles.button}>
