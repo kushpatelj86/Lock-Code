@@ -5,7 +5,6 @@ export function createUserTable() {
   console.log('Dropping and creating USER table...');
   const db = SQLite.openDatabaseSync('password_manager.db');
 
-  db.execSync(`DROP TABLE IF EXISTS USER;`);
 
   const query = `
     CREATE TABLE IF NOT EXISTS USER (
