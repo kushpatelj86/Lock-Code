@@ -40,7 +40,7 @@ export default function SignUpScreen() {
         phoneNumber
       );
 
-      if (inserted?.success === true) 
+      if (inserted.success === true) 
         {
         await AsyncStorage.setItem('username', username);
 

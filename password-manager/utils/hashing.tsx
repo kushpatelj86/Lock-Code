@@ -1,10 +1,10 @@
 import * as Crypto from 'expo-crypto';
 
 export async function hashPassword(password: string, salt: string) {
-  return await Crypto.digestStringAsync(
-    Crypto.CryptoDigestAlgorithm.SHA256,
-    salt + password
-  );
+  const hashed_pass =  await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256,
+    salt + password);
+
+    return hashed_pass;
 }
 
 export function generateSalt(length = 16) {

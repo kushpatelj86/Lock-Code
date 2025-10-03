@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AddAccountStyles } from './styles/AddAccountStyles';
-import { insertPassword } from '../utils/database'; 
+import { insertPassword } from '../utils/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddAccount() {
@@ -16,76 +16,78 @@ export default function AddAccount() {
 
   const router = useRouter();
 
+  async function handleAddAccount() {
+    if (!description || !username || !password || !add_date || !expiry_date) {
+      Alert.alert('Error', 'Please fill in all required fields.');
+      return;
+    }
 
-
-
-    async function handleAddAccount() {
-
-
-     const encrypted_password = password;
-  if (!description || !username || !password || !url || !add_date || !expiry_date) {
-    Alert.alert('Error', 'Please fill in all required fields.');
-    return;
-  }
-
-
-  const storedUserId = await AsyncStorage.getItem('loggedInUserId');
+    const storedUserId = await AsyncStorage.getItem('loggedInUserId');
     if (!storedUserId) {
       Alert.alert('Error', 'No logged in user found.');
       return;
     }
 
-  try {
-    const inserted = await insertPassword(
-      1,
-      description,
-      username,
-      encrypted_password,
-      url,
-      add_date,
-      expiry_date
-    );
+    const encrypted_password = password; 
 
-    if (inserted.success) {
-      Alert.alert('Success', 'Account created!');
-    } 
-    else {
-      Alert.alert('Error', inserted.message);
+    try {
+      const inserted = await insertPassword(
+        Number(storedUserId),
+        description,       
+        username,          
+        encrypted_password,
+        url,               
+        add_date,
+        expiry_date,
+        notes             
+      );
+
+      if (inserted.success) {
+        Alert.alert('Success', 'Account created!');
+        setDescription('');
+        setUsername('');
+        setPassword('');
+        setURL('');
+        setAddDate('');
+        setExpiryDate('');
+        setNotes('');
+        
+      } 
+      else {
+        Alert.alert('Error', inserted.message);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
     }
-  } catch (error) {
-    console.error(error);
-    Alert.alert('Error', 'Something went wrong. Try again.');
   }
-}
-
-
 
   return (
-    <View style={AddAccountStyles.container}>
+    <ScrollView contentContainerStyle={AddAccountStyles.container}>
       <View style={AddAccountStyles.form}>
 
-        <Text style={AddAccountStyles.label}>URL</Text>
+        <Text style={AddAccountStyles.label}>URL (optional)</Text>
         <TextInput
           value={url}
           onChangeText={setURL}
           style={AddAccountStyles.input}
         />
 
-        <Text style={AddAccountStyles.label}>Description</Text>
+        <Text style={AddAccountStyles.label}>Description *</Text>
         <TextInput
           value={description}
           onChangeText={setDescription}
           style={AddAccountStyles.input}
         />
 
-        <Text style={AddAccountStyles.label}>Username</Text>
+        <Text style={AddAccountStyles.label}>Username *</Text>
         <TextInput
           value={username}
           onChangeText={setUsername}
           style={AddAccountStyles.input}
         />
 
-        <Text style={AddAccountStyles.label}>Password</Text>
+        <Text style={AddAccountStyles.label}>Password *</Text>
         <TextInput
           value={password}
           onChangeText={setPassword}
@@ -93,30 +95,36 @@ export default function AddAccount() {
           style={AddAccountStyles.input}
         />
 
-        <Text style={AddAccountStyles.label}>Add Date</Text>
+        <Text style={AddAccountStyles.label}>Add Date *</Text>
         <TextInput
           value={add_date}
           onChangeText={setAddDate}
           style={AddAccountStyles.input}
         />
 
-        <Text style={AddAccountStyles.label}>Expiry Date</Text>
+        <Text style={AddAccountStyles.label}>Expiry Date *</Text>
         <TextInput
           value={expiry_date}
           onChangeText={setExpiryDate}
           style={AddAccountStyles.input}
         />
 
-
-         <Text style={AddAccountStyles.label}>Notes</Text>
+        <Text style={AddAccountStyles.label}>Notes (optional)</Text>
         <TextInput
           value={notes}
           onChangeText={setNotes}
           style={AddAccountStyles.input}
         />
+
+        <TouchableOpacity
+          style={AddAccountStyles.button}
+          onPress={handleAddAccount}
+        >
+          <Text style={AddAccountStyles.buttonText}>Add Account</Text>
+        </TouchableOpacity>
       </View>
 
       <Text style={AddAccountStyles.registrationLink}>Don't have an account? Register</Text>
-    </View>
+    </ScrollView>
   );
 }

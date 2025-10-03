@@ -8,7 +8,7 @@ export function createUserTable() {
   db.execSync(`DROP TABLE IF EXISTS USER;`);
 
   const query = `
-    CREATE TABLE USER (
+    CREATE TABLE IF NOT EXISTS USER (
       user_id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT NOT NULL UNIQUE,
       master_password TEXT NOT NULL,
@@ -30,10 +30,9 @@ export function createPasswordTable() {
   console.log('Dropping and creating passwords table...');
   const db = SQLite.openDatabaseSync('password_manager.db');
 
-  db.execSync(`DROP TABLE IF EXISTS PASSWORD;`);
 
   const query = `
-    CREATE TABLE PASSWORD (
+    CREATE TABLE IF NOT EXISTS PASSWORD (
       password_id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
       account_name TEXT NOT NULL,
@@ -122,7 +121,7 @@ export async function verifyMasterUser(username: string, master_password: string
     const user: any = db.getFirstSync(query);
 
     if (!user) {
-      console.log('Invalid username or password');
+      console.log('user does not exist');
       return { success: false, message: 'Invalid username or password' };
     }
 
@@ -137,6 +136,9 @@ export async function verifyMasterUser(username: string, master_password: string
       console.log('User successfully logged in');
       return { success: true, message: 'Logged in', userId: user.user_id };
     } else {
+      console.log("hashed inout ",hashedInput );
+            console.log("user.master_password ",user.master_password );
+
       console.log('Invalid username or password');
       return { success: false, message: 'Invalid username or password' };
     }
@@ -152,17 +154,17 @@ export async function insertPassword(
   accountUsername: string,
   encryptedPassword: string,
   iv: string,
-  url?: string,
+  url: string,
   add_date?: string,
   expiry_date?: string,
   notes?: string
 ) {
-  console.log(`Inserting password for userId=${userId}, account=${accountName}`);
+  console.log(`Inserting PASSWORD for userId=${userId}, account=${accountName}`);
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   console.log('Checking if account already exists...');
   const existing = db.getFirstSync(
-    `SELECT * FROM passwords WHERE user_id = ? AND account_username = ?`,
+    `SELECT * FROM PASSWORD WHERE user_id = ? AND account_username = ?`,
     [userId, accountUsername]
   );
 
@@ -172,8 +174,8 @@ export async function insertPassword(
   }
 
   const query = `
-    INSERT INTO passwords (user_id, account_name, account_username, encrypted_pass, iv, url, add_date, expiry_date, notes)
-    VALUES ('${userId}', '${accountName}', '${accountUsername}', '${encryptedPassword}', '${iv}', '${url ?? ''}', '${add_date ?? ''}', '${expiry_date ?? ''}', '${notes ?? ''}');
+    INSERT INTO PASSWORD (user_id, account_name, account_username, encrypted_pass, iv, url, add_date, expiry_date, notes)
+    VALUES ('${userId}', '${accountName}', '${accountUsername}', '${encryptedPassword}', '${iv}', '${url  }', '${add_date }', '${expiry_date }', '${notes }');
   `;
 
   try {
