@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
 import { hashPassword, generateSalt } from './hashing';
+import { encrypt } from './encryption';
 
 export function createUserTable() {
   console.log('Dropping and creating USER table...');
@@ -134,9 +135,10 @@ export async function verifyMasterUser(username: string, master_password: string
     if (hashedInput === user.master_password) {
       console.log('User successfully logged in');
       return { success: true, message: 'Logged in', userId: user.user_id };
-    } else {
+    } 
+    else {
       console.log("hashed inout ",hashedInput );
-            console.log("user.master_password ",user.master_password );
+      console.log("user.master_password ",user.master_password );
 
       console.log('Invalid username or password');
       return { success: false, message: 'Invalid username or password' };
@@ -152,7 +154,6 @@ export async function insertPassword(
   accountName: string,
   accountUsername: string,
   encryptedPassword: string,
-  iv: string,
   url: string,
   add_date?: string,
   expiry_date?: string,
@@ -172,9 +173,12 @@ export async function insertPassword(
     return { success: false, message: "Account already exists" };
   }
 
+const { encrypted, iv } = encrypt("mySecretPassword");
+
+
   const query = `
     INSERT INTO PASSWORD (user_id, account_name, account_username, encrypted_pass, iv, url, add_date, expiry_date, notes)
-    VALUES ('${userId}', '${accountName}', '${accountUsername}', '${encryptedPassword}', '${iv}', '${url  }', '${add_date }', '${expiry_date }', '${notes }');
+    VALUES ('${userId}', '${accountName}', '${accountUsername}', '${encrypted}', '${iv}', '${url  }', '${add_date }', '${expiry_date }', '${notes }');
   `;
 
   try {
