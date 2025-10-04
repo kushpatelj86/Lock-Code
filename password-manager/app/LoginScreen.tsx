@@ -16,22 +16,28 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkingLogin, setCheckingLogin] = useState(true); 
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   useEffect(() => {
-    checkLoggedInUser();
-  }, []);
+    async function checkLoginStatus() {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+        const storedUserId = await AsyncStorage.getItem('loggedInUserId');
 
-  async function checkLoggedInUser() {
-    try {
-      const storedUser = await AsyncStorage.getItem('loggedInUser');
-      if (storedUser) {
-        navigation.navigate('HomeScreen');
+        if (storedUser && storedUserId) {
+          navigation.replace('HomeScreen');
+          return;
+        }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+      } finally {
+        setCheckingLogin(false);
       }
-    } catch (error) {
-      console.error('Error reading local storage:', error);
     }
-  }
+
+    checkLoginStatus();
+  }, []);
 
   async function handleLogin() {
     if (!username.trim() || !password.trim()) {
@@ -47,8 +53,7 @@ export default function LoginScreen() {
         await AsyncStorage.setItem('loggedInUser', username.trim());
         await AsyncStorage.setItem('loggedInUserId', String(result.userId));
 
-        Alert.alert('Success', 'Logged in!');
-        navigation.navigate('HomeScreen');
+        navigation.replace('HomeScreen'); 
       } else {
         Alert.alert('Error', result?.message || 'Invalid username or password.');
       }
@@ -62,6 +67,14 @@ export default function LoginScreen() {
 
   function navigateToSignUp() {
     navigation.navigate('SignUpScreen');
+  }
+
+  if (checkingLogin) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
   }
 
   return (
