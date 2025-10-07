@@ -1,8 +1,12 @@
+import * as Crypto from "expo-crypto";
 import CryptoJS from "crypto-js";
 
-const key = CryptoJS.enc.Utf8.parse("12345678901234561234567890123456"); 
-export function encrypt(plain: string) {
-  const iv = CryptoJS.lib.WordArray.random(16);
+const key = CryptoJS.enc.Utf8.parse("12345678901234561234567890123456");
+
+export async function encrypt(plain: string) {
+  const randomBytes = await Crypto.getRandomBytesAsync(16);
+  const iv = CryptoJS.lib.WordArray.create(randomBytes);
+
   const encrypted = CryptoJS.AES.encrypt(plain, key, { iv });
 
   const ciphertextBase64 = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
@@ -10,4 +14,3 @@ export function encrypt(plain: string) {
 
   return { encrypted: ciphertextBase64, iv: ivHex };
 }
-

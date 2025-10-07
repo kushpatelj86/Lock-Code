@@ -173,7 +173,7 @@ export async function insertPassword(
     return { success: false, message: "Account already exists" };
   }
 
-const { encrypted, iv } = encrypt(encryptedPassword);
+const { encrypted, iv } = await encrypt(encryptedPassword);
 
 
   const query = `
