@@ -190,3 +190,21 @@ const { encrypted, iv } = await encrypt(encryptedPassword);
     return { success: false, message: "Failed to create password" };
   }
 }
+
+
+
+export async function retrievePassword(
+  userId: number
+) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  console.log('Checking if account already exists...');
+  const existing = db.getFirstSync(
+    `SELECT * FROM PASSWORD WHERE user_id = ?`,
+    [userId]
+  );
+
+
+}
+
+
