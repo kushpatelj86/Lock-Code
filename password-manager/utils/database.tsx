@@ -192,19 +192,26 @@ const { encrypted, iv } = await encrypt(encryptedPassword);
 }
 
 
-
-export async function retrievePassword(
-  userId: number
-) {
+export async function retrievePassword(userId: number) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
-  console.log('Checking if account already exists...');
-  const existing = db.getFirstSync(
-    `SELECT * FROM PASSWORD WHERE user_id = ?`,
-    [userId]
-  );
+  console.log('Retrieving passwords for user:', userId);
 
+  try {
+    const results = db.getAllSync(
+      `SELECT * FROM PASSWORD WHERE user_id = ?`,
+      [userId]
+    );
 
+    if (results.length > 0) {
+      return { success: true, data: results };
+    } 
+    else {
+      return { success: false, message: "No passwords found for this user." };
+    }
+
+  } catch (error) {
+    console.error('Error retrieving passwords:', error);
+    return { success: false, message: "Failed to retrieve passwords." };
+  }
 }
-
-
