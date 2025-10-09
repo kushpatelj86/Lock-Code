@@ -13,6 +13,9 @@ type Password = {
 
 export default function VaultScreen() {
   const [passwords, setPasswords] = useState<Password[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
+
 
   useEffect(() => {
     getPasswords();
@@ -43,6 +46,11 @@ async function getPasswords() {
       Alert.alert('Error', 'Failed to load passwords.');
     }
   }
+
+  async function handleClear(){
+    setSearchQuery('');
+    setFilteredPasswords(passwords);
+  };
 
 
 
