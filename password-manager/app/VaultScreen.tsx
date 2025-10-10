@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'reac
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
+import SearchBar from './components/SearchBar';
 
 type Password = {
   id: number;
@@ -63,6 +64,38 @@ async function getPasswords() {
       <Text style={homescreenstyles.subtitle}>
         Here is a list of all your credentials
       </Text>
+
+
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        onClear={handleClear}
+        placeholder="Search accounts..."
+      />
+
+      <ScrollView>
+
+        {filteredPasswords.length > 0 ? (
+          filteredPasswords.map((item) => (
+            <View
+              key={item.id}
+            >
+              <Text >
+                {item.account}
+              </Text>
+              <Text>{item.password}</Text>
+            </View>
+          ))
+        ) :(
+          <Text >
+            No results found
+          </Text>
+        )}
+      </ScrollView>
+
+
+
+
 
     </View>
   );
