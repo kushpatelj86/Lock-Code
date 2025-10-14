@@ -199,9 +199,9 @@ export async function retrievePassword(userId: number) {
 
   try {
     const results = db.getAllSync(
-      `SELECT * FROM PASSWORD WHERE user_id = ?`,
-      [userId]
-    );
+  `SELECT * FROM PASSWORD WHERE user_id = ${userId}`
+);
+
 
     if (results.length > 0) {
       return { success: true, data: results };

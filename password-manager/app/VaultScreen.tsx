@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, Alert, ScrollView } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
+import SearchBar from './components/SearchBar';
+import AccountCard from './components/AccountCard';
 
 type Password = {
-  id: number;
+  password_id: number;
   user_id: number;
-  account: string;
-  password: string;
+  account_name: string;
+  account_username: string;
+  encrypted_pass: string;
+  iv: string;
+  url?: string;
+  add_date?: string;
+  expiry_date?: string;
+  notes?: string;
 };
 
 export default function VaultScreen() {
@@ -16,12 +24,11 @@ export default function VaultScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
 
-
   useEffect(() => {
     getPasswords();
   }, []);
 
-async function getPasswords() {
+  async function getPasswords() {
     try {
       const storedUserId = await AsyncStorage.getItem('loggedInUserId');
       if (!storedUserId) {
@@ -31,14 +38,10 @@ async function getPasswords() {
 
       const result = await retrievePassword(Number(storedUserId));
 
-      if (result.success) {
-        if(result.data)
-        {
+      if (result.success && result.data) {
         setPasswords(result.data as Password[]);
-
-        }
-      } 
-      else {
+        setFilteredPasswords(result.data as Password[]);
+      } else {
         Alert.alert('Info', result.message || 'No passwords found.');
       }
     } catch (err) {
@@ -47,15 +50,21 @@ async function getPasswords() {
     }
   }
 
-  async function handleClear(){
+  useEffect(() => {
+    if (searchQuery.trim() === '') {
+      setFilteredPasswords(passwords);
+    } else {
+      const filtered = passwords.filter((p) =>
+        p.account_name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredPasswords(filtered);
+    }
+  }, [searchQuery, passwords]);
+
+  function handleClear() {
     setSearchQuery('');
     setFilteredPasswords(passwords);
-  };
-
-
-
-
-
+  }
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
@@ -64,6 +73,22 @@ async function getPasswords() {
         Here is a list of all your credentials
       </Text>
 
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        onClear={handleClear}
+        placeholder="Search accounts..."
+      />
+
+      <ScrollView>
+        {filteredPasswords.length > 0 ? (
+          filteredPasswords.map((item) => (
+            <AccountCard key={item.password_id} item={item} />
+          ))
+        ) : (
+          <Text>No results found</Text>
+        )}
+      </ScrollView>
     </View>
   );
 }
