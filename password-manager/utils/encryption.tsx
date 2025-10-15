@@ -14,3 +14,16 @@ export async function encrypt(plain: string) {
 
   return { encrypted: ciphertextBase64, iv: ivHex };
 }
+
+
+export function decrypt(encrypted: string, ivHex: string) {
+  const iv = CryptoJS.enc.Hex.parse(ivHex);
+  const ciphertext = CryptoJS.enc.Base64.parse(encrypted);
+
+  const cipherParams = CryptoJS.lib.CipherParams.create({ ciphertext });
+
+  const decrypted = CryptoJS.AES.decrypt(cipherParams, key, { iv });
+
+  return decrypted.toString(CryptoJS.enc.Utf8);
+}
+
