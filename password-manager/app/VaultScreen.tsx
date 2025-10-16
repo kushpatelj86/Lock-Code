@@ -3,6 +3,7 @@ import { View, Text, Alert, ScrollView } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
+import { decrypt } from '../utils/encryption';
 import SearchBar from './components/SearchBar';
 import AccountCard from './components/AccountCard';
 
@@ -17,6 +18,7 @@ type Password = {
   add_date?: string;
   expiry_date?: string;
   notes?: string;
+  decrypted_pass?: string; 
 };
 
 export default function VaultScreen() {
@@ -39,8 +41,21 @@ export default function VaultScreen() {
       const result = await retrievePassword(Number(storedUserId));
 
       if (result.success && result.data) {
-        setPasswords(result.data as Password[]);
-        setFilteredPasswords(result.data as Password[]);
+        // Decrypt passwords before setting state
+        const decryptedData: Password[] = await Promise.all(
+          (result.data as Password[]).map(async (item) => {
+            try {
+              const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
+              return { ...item, decrypted_pass };
+            } catch (err) {
+              console.error('Failed to decrypt password for', item.account_name, err);
+              return { ...item, decrypted_pass: 'Error decrypting' };
+            }
+          })
+        );
+
+        setPasswords(decryptedData);
+        setFilteredPasswords(decryptedData);
       } else {
         Alert.alert('Info', result.message || 'No passwords found.');
       }
