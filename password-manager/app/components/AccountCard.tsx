@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import { styles } from './styles/AccountCardStyling'; 
 
+// Password Structure
 type Password = {
   password_id: number;
   user_id: number;
@@ -18,6 +20,7 @@ interface AccountCardProps {
   item: Password;
 }
 
+// Account Card
 export default function AccountCard({ item }: AccountCardProps) {
   return (
     <View style={styles.card}>
@@ -32,22 +35,3 @@ export default function AccountCard({ item }: AccountCardProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    marginVertical: 10,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-  },
-  title: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-});
