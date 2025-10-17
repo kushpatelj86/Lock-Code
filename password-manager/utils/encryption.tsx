@@ -16,7 +16,7 @@ export async function encrypt(plain: string) {
 }
 
 
-export function decrypt(encrypted: string, ivHex: string) {
+export async function decrypt(encrypted: string, ivHex: string) {
   const iv = CryptoJS.enc.Hex.parse(ivHex);
   const ciphertext = CryptoJS.enc.Base64.parse(encrypted);
 

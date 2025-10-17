@@ -41,7 +41,6 @@ export default function VaultScreen() {
       const result = await retrievePassword(Number(storedUserId));
 
       if (result.success && result.data) {
-        // Decrypt passwords before setting state
         const decryptedData: Password[] = await Promise.all(
           (result.data as Password[]).map(async (item) => {
             try {
@@ -68,7 +67,8 @@ export default function VaultScreen() {
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
-    } else {
+    } 
+    else {
       const filtered = passwords.filter((p) =>
         p.account_name.toLowerCase().includes(searchQuery.toLowerCase())
       );
