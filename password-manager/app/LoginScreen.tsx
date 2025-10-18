@@ -7,24 +7,29 @@ import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginStyles'; 
 import { verifyMasterUser } from '../utils/database'; 
 
+// Define the type for navigation prop for this screen
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'LoginScreen'
 >;
 
 export default function LoginScreen() {
+  // State variables for username, password, loading indicator, and login check
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [checkingLogin, setCheckingLogin] = useState(true); 
+  const [checkingLogin, setCheckingLogin] = useState(true); // To check if user is already logged in
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
+  // useEffect to check login status when the screen mounts
   useEffect(() => {
     async function checkLoginStatus() {
       try {
+        // Get saved user info from AsyncStorage
         const storedUser = await AsyncStorage.getItem('loggedInUser');
         const storedUserId = await AsyncStorage.getItem('loggedInUserId');
 
+        // If user info exists, navigate to HomeScreen automatically
         if (storedUser && storedUserId) {
           navigation.replace('HomeScreen');
           return;
@@ -32,6 +37,7 @@ export default function LoginScreen() {
       } catch (error) {
         console.error('Error checking login status:', error);
       } finally {
+        // Finished checking login
         setCheckingLogin(false);
       }
     }
@@ -39,20 +45,26 @@ export default function LoginScreen() {
     checkLoginStatus();
   }, []);
 
+  // Function to handle user login
   async function handleLogin() {
+    // Validate inputs
     if (!username.trim() || !password.trim()) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
 
-    setLoading(true);
+    setLoading(true); // Show loading indicator
+
     try {
+      // Verify user credentials using database helper
       const result = await verifyMasterUser(username.trim(), password);
       
       if (result?.success && result.userId) {
+        // Save user info in AsyncStorage for session persistence
         await AsyncStorage.setItem('loggedInUser', username.trim());
         await AsyncStorage.setItem('loggedInUserId', String(result.userId));
 
+        // Navigate to HomeScreen after successful login
         navigation.replace('HomeScreen'); 
       } else {
         Alert.alert('Error', result?.message || 'Invalid username or password.');
@@ -61,14 +73,16 @@ export default function LoginScreen() {
       console.error('Login error:', error);
       Alert.alert('Error', 'Something went wrong. Try again.');
     } finally {
-      setLoading(false);
+      setLoading(false); // Hide loading indicator
     }
   }
 
+  // Function to navigate to the SignUp screen
   function navigateToSignUp() {
     navigation.navigate('SignUpScreen');
   }
 
+  // Show loading screen while checking if user is already logged in
   if (checkingLogin) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -83,6 +97,7 @@ export default function LoginScreen() {
 
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
+          {/* Username input */}
           <Text style={loginStyles.label}>Username</Text>
           <TextInput
             value={username}
@@ -92,6 +107,7 @@ export default function LoginScreen() {
             autoCorrect={false}
           />
 
+          {/* Password input */}
           <Text style={loginStyles.label}>Master Password</Text>
           <TextInput
             value={password}
@@ -101,6 +117,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
           />
 
+          {/* Login button */}
           <TouchableOpacity
             onPress={handleLogin}
             style={loginStyles.button}
@@ -113,6 +130,7 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
 
+          {/* Sign Up button */}
           <TouchableOpacity onPress={navigateToSignUp} style={loginStyles.button}>
             <Text style={loginStyles.buttonText}>
               Don't have an account? Sign Up

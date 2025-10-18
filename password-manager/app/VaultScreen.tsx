@@ -55,7 +55,8 @@ export default function VaultScreen() {
 
         setPasswords(decryptedData);
         setFilteredPasswords(decryptedData);
-      } else {
+      } 
+      else {
         Alert.alert('Info', result.message || 'No passwords found.');
       }
     } catch (err) {
