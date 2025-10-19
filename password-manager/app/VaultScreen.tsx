@@ -3,7 +3,7 @@ import { View, Text, Alert, ScrollView } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
-import { decrypt } from '../utils/encryption'; // ✅ use decryptPassword
+import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
 import AccountCard from './components/AccountCard';
 
