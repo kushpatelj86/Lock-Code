@@ -3,10 +3,11 @@ import { View, Text, Alert, ScrollView } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
-import { decrypt } from '../utils/encryption';
+import { decrypt } from '../utils/encryption'; // ✅ use decryptPassword
 import SearchBar from './components/SearchBar';
 import AccountCard from './components/AccountCard';
 
+// Define the Password type
 type Password = {
   password_id: number;
   user_id: number;
@@ -18,7 +19,7 @@ type Password = {
   add_date?: string;
   expiry_date?: string;
   notes?: string;
-  decrypted_pass?: string; 
+  decrypted_pass?: string;
 };
 
 export default function VaultScreen() {
@@ -26,10 +27,12 @@ export default function VaultScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
 
+  // Load passwords when the screen mounts
   useEffect(() => {
     getPasswords();
   }, []);
 
+  // Retrieve and decrypt all passwords
   async function getPasswords() {
     try {
       const storedUserId = await AsyncStorage.getItem('loggedInUserId');
@@ -55,8 +58,7 @@ export default function VaultScreen() {
 
         setPasswords(decryptedData);
         setFilteredPasswords(decryptedData);
-      } 
-      else {
+      } else {
         Alert.alert('Info', result.message || 'No passwords found.');
       }
     } catch (err) {
@@ -65,18 +67,23 @@ export default function VaultScreen() {
     }
   }
 
+  // Filter results when search changes
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
-    } 
-    else {
-      const filtered = passwords.filter((p) =>
-        p.account_name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+    } else {
+      const query = searchQuery.toLowerCase();
+      const filtered = passwords.filter((p) => {
+        const nameMatch = p.account_name?.toLowerCase().includes(query);
+        const usernameMatch = p.account_username?.toLowerCase().includes(query);
+        const decryptedMatch = p.decrypted_pass?.toLowerCase().includes(query);
+        return nameMatch || usernameMatch || decryptedMatch;
+      });
       setFilteredPasswords(filtered);
     }
   }, [searchQuery, passwords]);
 
+  // Clear search
   function handleClear() {
     setSearchQuery('');
     setFilteredPasswords(passwords);

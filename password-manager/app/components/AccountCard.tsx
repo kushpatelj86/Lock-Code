@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { styles } from './styles/AccountCardStyling'; 
 
-// Password Structure
 type Password = {
   password_id: number;
   user_id: number;
@@ -14,20 +13,19 @@ type Password = {
   add_date?: string;
   expiry_date?: string;
   notes?: string;
+  decrypted_pass?: string; 
 };
 
 interface AccountCardProps {
   item: Password;
 }
 
-// Account Card
 export default function AccountCard({ item }: AccountCardProps) {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Account Name: {item.account_name}</Text>
       <Text>Username: {item.account_username}</Text>
-      <Text>Encrypted Password: {item.encrypted_pass}</Text>
-      <Text>IV: {item.iv}</Text>
+      <Text>Password: {item.decrypted_pass}</Text> 
       {item.url && <Text>URL: {item.url}</Text>}
       {item.add_date && <Text>Added Date: {item.add_date}</Text>}
       {item.expiry_date && <Text>Expiry Date: {item.expiry_date}</Text>}

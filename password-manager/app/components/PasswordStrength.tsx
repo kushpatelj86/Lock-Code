@@ -82,5 +82,13 @@ export function formatYears(y: number): string {
     v /= 1000;
     idx++;
   }
-  return idx >= 0 ? `${v.toFixed(2)} ${powers[idx]} years` : `${y.toFixed(2)} years`;
+  if(idx >= 0)
+  {
+    return `${v.toFixed(2)} ${powers[idx]} years`
+  }
+  else
+  {
+      return `${y.toFixed(2)} years`;
+
+  }
 }
