@@ -6,8 +6,8 @@ import { retrievePassword } from '../utils/database';
 import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
 import AccountCard from './components/AccountCard';
+import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 
-// Define the Password type
 type Password = {
   password_id: number;
   user_id: number;
@@ -20,6 +20,7 @@ type Password = {
   expiry_date?: string;
   notes?: string;
   decrypted_pass?: string;
+  crackTime?: string; // new optional property
 };
 
 export default function VaultScreen() {
@@ -27,12 +28,10 @@ export default function VaultScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
 
-  // Load passwords when the screen mounts
   useEffect(() => {
     getPasswords();
   }, []);
 
-  // Retrieve and decrypt all passwords
   async function getPasswords() {
     try {
       const storedUserId = await AsyncStorage.getItem('loggedInUserId');
@@ -48,10 +47,13 @@ export default function VaultScreen() {
           (result.data as Password[]).map(async (item) => {
             try {
               const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
-              return { ...item, decrypted_pass };
+              const crackTime = decrypted_pass
+                ? formatYears(estimateCrackTime(decrypted_pass).years)
+                : '';
+              return { ...item, decrypted_pass, crackTime };
             } catch (err) {
               console.error('Failed to decrypt password for', item.account_name, err);
-              return { ...item, decrypted_pass: 'Error decrypting' };
+              return { ...item, decrypted_pass: 'Error decrypting', crackTime: '' };
             }
           })
         );
@@ -67,7 +69,6 @@ export default function VaultScreen() {
     }
   }
 
-  // Filter results when search changes
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
@@ -83,7 +84,6 @@ export default function VaultScreen() {
     }
   }, [searchQuery, passwords]);
 
-  // Clear search
   function handleClear() {
     setSearchQuery('');
     setFilteredPasswords(passwords);

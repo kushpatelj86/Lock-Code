@@ -15,6 +15,7 @@ type Password = {
   expiry_date?: string;
   notes?: string;
   decrypted_pass?: string;
+  crackTime?: string; // optional precomputed crack time
 };
 
 interface AccountCardProps {
@@ -32,6 +33,7 @@ export default function AccountCard({ item }: AccountCardProps) {
       await Clipboard.setStringAsync(text);
       Alert.alert('Copied!', 'Password copied to clipboard.');
 
+      // Clear clipboard after 30 seconds
       setTimeout(async () => {
         try {
           await Clipboard.setStringAsync('');
@@ -45,7 +47,7 @@ export default function AccountCard({ item }: AccountCardProps) {
     }
   };
 
-  const maskedIndicator = '••••••••'; // 8 bullets fixed
+  const maskedIndicator = '••••••••'; // fixed 8 bullets
 
   return (
     <View style={styles.card}>
@@ -58,6 +60,13 @@ export default function AccountCard({ item }: AccountCardProps) {
           {item.decrypted_pass ? maskedIndicator : 'Unavailable'}
         </Text>
       </View>
+
+      {/* Display precomputed crack time if available */}
+      {item.crackTime && (
+        <Text style={{ color: 'green', marginTop: 2 }}>
+          Estimated crack time: {item.crackTime}
+        </Text>
+      )}
 
       {item.url && <Text>URL: {item.url}</Text>}
       {item.add_date && <Text>Added: {item.add_date}</Text>}

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { AddAccountStyles } from './styles/AddAccountStyles';
 import { insertPassword } from '../utils/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 
 export default function AddAccount() {
   // Functional Requirement: Users can add new account credentials
@@ -15,14 +16,28 @@ export default function AddAccount() {
   const [add_date, setAddDate] = useState('');
   const [expiry_date, setExpiryDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [crackTime, setCrackTime] = useState(''); 
 
   const router = useRouter();
+
+
+  useEffect(() => {
+    if (password.length > 0) {
+      const estimate = estimateCrackTime(password);
+      setCrackTime(formatYears(estimate.years));
+    } 
+    else {
+      setCrackTime('');
+    }
+  }, [password]);
+
 
   // Functional Requirement: Handles adding new credentials securely
   async function handleAddAccount() {
     // Functional Requirement: Error handling and validation
     // Precondition: All required fields (marked with *) must be filled
-    if (!description || !username || !password || !add_date || !expiry_date) {
+    if (!description || !username || !password || !add_date || !expiry_date) 
+    {
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
     }
@@ -119,6 +134,13 @@ export default function AddAccount() {
           secureTextEntry
           style={AddAccountStyles.input}
         />
+
+        {/* Password crack time feedback */}
+        {password.length > 0 && (
+          <Text style={{ marginBottom: 10, color: 'green' }}>
+            Estimated crack time: {crackTime}
+          </Text>
+        )}
 
         {/* Required Add Date */}
         {/* Functional Requirement: Add Date for account tracking */}
