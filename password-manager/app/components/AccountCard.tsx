@@ -35,9 +35,8 @@ export default function AccountCard({ item }: AccountCardProps) {
       setTimeout(async () => {
         try {
           await Clipboard.setStringAsync('');
-          console.log('Clipboard cleared after 30 seconds for security.');
         } catch (err) {
-          console.warn('Failed to clear clipboard:', err);
+          console.warn('Failed to clear clipboard.');
         }
       }, 30000);
     } catch (err) {
@@ -46,11 +45,19 @@ export default function AccountCard({ item }: AccountCardProps) {
     }
   };
 
+  const maskedIndicator = '••••••••'; // 8 bullets fixed
+
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Account Name: {item.account_name}</Text>
       <Text>Username: {item.account_username}</Text>
-      <Text>Password: {item.decrypted_pass || 'Unavailable'}</Text>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+        <Text style={{ fontWeight: 'bold' }}>Password: </Text>
+        <Text selectable={false} style={{ color: '#333', marginRight: 10 }}>
+          {item.decrypted_pass ? maskedIndicator : 'Unavailable'}
+        </Text>
+      </View>
 
       {item.url && <Text>URL: {item.url}</Text>}
       {item.add_date && <Text>Added: {item.add_date}</Text>}

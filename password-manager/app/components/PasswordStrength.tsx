@@ -88,7 +88,7 @@ export function formatYears(y: number): string {
   }
   else
   {
-      return `${y.toFixed(2)} years`;
+    return `${y.toFixed(2)} years`;
 
   }
 }
