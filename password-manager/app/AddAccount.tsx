@@ -53,22 +53,27 @@ export default function AddAccount() {
 
   // Update crack time when password changes
   useEffect(() => {
-    if (password.length > 0) {
+    if (password.length > 0) 
+    {
       const estimate = estimateCrackTime(password);
       setCrackTime(formatYears(estimate.years));
-    } else {
+    } 
+    else 
+    {
       setCrackTime('');
     }
   }, [password]);
 
   async function handleAddAccount() {
-    if (!description || !username || !password || !add_date || !expiry_date) {
+    if (!description || !username || !password || !add_date || !expiry_date) 
+    {
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
     }
 
     const storedUserId = await AsyncStorage.getItem('loggedInUserId');
-    if (!storedUserId) {
+    if (!storedUserId) 
+    {
       Alert.alert('Error', 'No logged in user found.');
       return;
     }
@@ -96,7 +101,8 @@ export default function AddAccount() {
         setAddDate('');
         setExpiryDate('');
         setNotes('');
-      } else {
+      } 
+      else {
         Alert.alert('Error', inserted.message);
       }
     } catch (error) {

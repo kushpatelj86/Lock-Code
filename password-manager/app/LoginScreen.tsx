@@ -66,7 +66,8 @@ export default function LoginScreen() {
 
         // Navigate to HomeScreen after successful login
         navigation.replace('HomeScreen'); 
-      } else {
+      } 
+      else {
         Alert.alert('Error', result?.message || 'Invalid username or password.');
       }
     } catch (error) {
