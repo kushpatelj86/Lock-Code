@@ -5,6 +5,7 @@ import { AddAccountStyles } from './styles/AddAccountStyles';
 import { insertPassword } from '../utils/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
+import { generateRandomPassword } from './components/PasswordGenerator';
 
 export default function AddAccount() {
   const [description, setDescription] = useState('');
@@ -19,19 +20,12 @@ export default function AddAccount() {
   const router = useRouter();
   const timerRef = useRef<number | null>(null);
 
-  // Auto logout handler
+  // Auto logout
   async function handleLogout(auto = false) {
     try {
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
-
-      if (auto) {
-        Alert.alert('Session expired', 'You were logged out due to inactivity.');
-      } 
-      else {
-        Alert.alert('Logged out', 'You have been logged out successfully.');
-      }
-
+      Alert.alert(auto ? 'Session expired' : 'Logged out', auto ? 'You were logged out due to inactivity.' : 'You have been logged out successfully.');
       router.replace('/LoginScreen');
     } catch (error) {
       console.error('Logout error:', error);
@@ -41,39 +35,32 @@ export default function AddAccount() {
 
   // Start timer on mount
   useEffect(() => {
-    timerRef.current = setTimeout(() => {
-      handleLogout(true);
-    }, 6000000); 
+    timerRef.current = setTimeout(() => handleLogout(true), 6000000);
     return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
-  // Update crack time when password changes
+  // Update crack time on password change
   useEffect(() => {
-    if (password.length > 0) 
-    {
+    if (password.length > 0) {
       const estimate = estimateCrackTime(password);
       setCrackTime(formatYears(estimate.years));
     } 
-    else 
-    {
+    else {
       setCrackTime('');
     }
   }, [password]);
 
+  // Add account handler
   async function handleAddAccount() {
-    if (!description || !username || !password || !add_date || !expiry_date) 
-    {
+    if (!description || !username || !password || !add_date || !expiry_date) {
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
     }
 
     const storedUserId = await AsyncStorage.getItem('loggedInUserId');
-    if (!storedUserId) 
-    {
+    if (!storedUserId) {
       Alert.alert('Error', 'No logged in user found.');
       return;
     }
@@ -125,6 +112,14 @@ export default function AddAccount() {
 
         <Text style={AddAccountStyles.label}>Password *</Text>
         <TextInput value={password} onChangeText={setPassword} secureTextEntry style={AddAccountStyles.input} />
+
+        {/* Generate Password Button */}
+        <TouchableOpacity
+          style={[AddAccountStyles.button, { marginVertical: 10 }]}
+          onPress={() => setPassword(generateRandomPassword(16))}
+        >
+          <Text style={AddAccountStyles.buttonText}>Generate Password</Text>
+        </TouchableOpacity>
 
         {password.length > 0 && (
           <Text style={{ marginBottom: 10, color: 'green' }}>

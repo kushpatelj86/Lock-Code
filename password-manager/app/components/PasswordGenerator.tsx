@@ -2,8 +2,8 @@ function getRandomChar(set: string) {
   return set[Math.floor(Math.random() * set.length)];
 }
 
-export function generateRandomPassword() {
-  const length = Math.floor(Math.random() * 40) + 12;
+export function generateRandomPassword(length = 16) {
+   length = Math.floor(Math.random() * 40) + 12;
 
   const lowerChars = "abcdefghijklmnopqrstuvwxyz";
   const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
