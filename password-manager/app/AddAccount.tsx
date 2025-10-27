@@ -46,7 +46,9 @@ export default function AddAccount() {
   useEffect(() => {
     timerRef.current = setTimeout(() => handleLogout(true), 6000000);
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
@@ -56,7 +58,9 @@ export default function AddAccount() {
     if (password.length > 0) {
       const estimate = estimateCrackTime(password);
       setCrackTime(formatYears(estimate.years));
-    } else {
+    } 
+    else 
+    {
       setCrackTime('');
     }
   }, [password]);
@@ -64,13 +68,15 @@ export default function AddAccount() {
   // Functional Requirement: Add / Edit / Delete Accounts
   // The system shall allow users to store credentials securely in the database.
   async function handleAddAccount() {
-    if (!description || !username || !password || !add_date || !expiry_date) {
+    if (!description || !username || !password || !add_date || !expiry_date) 
+    {
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
     }
 
     const storedUserId = await AsyncStorage.getItem('loggedInUserId');
-    if (!storedUserId) {
+    if (!storedUserId) 
+    {
       Alert.alert('Error', 'No logged in user found.');
       return;
     }
@@ -91,7 +97,8 @@ export default function AddAccount() {
         notes
       );
 
-      if (inserted.success) {
+      if (inserted.success) 
+      {
         Alert.alert('Success', 'Account created!');
         setDescription('');
         setUsername('');
@@ -100,7 +107,9 @@ export default function AddAccount() {
         setAddDate('');
         setExpiryDate('');
         setNotes('');
-      } else {
+      } 
+      else 
+      {
         Alert.alert('Error', inserted.message);
       }
     } catch (error) {

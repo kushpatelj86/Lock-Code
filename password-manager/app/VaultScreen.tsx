@@ -48,7 +48,8 @@ export default function VaultScreen() {
 
       if (auto) {
         Alert.alert('Session expired', 'You were logged out due to inactivity.');
-      } else {
+      } 
+      else {
         Alert.alert('Logged out', 'You have been logged out successfully.');
       }
 
@@ -71,7 +72,9 @@ export default function VaultScreen() {
   useEffect(() => {
     resetTimer();
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current){ 
+        clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
@@ -90,24 +93,35 @@ export default function VaultScreen() {
 
       const result = await retrievePassword(Number(storedUserId));
       if (result.success && result.data) {
-        const decryptedData: Password[] = await Promise.all(
-          (result.data as Password[]).map(async (item) => {
+          const decryptedData: Password[] = [];
+          for (const item of result.data as Password[]) {
             try {
               const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
-              const crackTime = decrypted_pass
-                ? formatYears(estimateCrackTime(decrypted_pass).years)
-                : '';
-              return { ...item, decrypted_pass, crackTime };
-            } catch (err) {
-              console.error('Failed to decrypt password for', item.account_name, err);
-              return { ...item, decrypted_pass: 'Error decrypting', crackTime: '' };
+              let crackTime = '';
+
+              if (decrypted_pass) 
+              {
+                const estimated = estimateCrackTime(decrypted_pass);
+                crackTime = formatYears(estimated.years);
+              }
+
+              decryptedData.push({ ...item, decrypted_pass, crackTime });
+
+            } catch (error) {
+              console.error('Failed to decrypt password for', item.account_name, error);
+              decryptedData.push({ ...item, decrypted_pass: 'Error decrypting', crackTime: '' });
             }
-          })
-        );
+            
+            
+
+
+          }
+
 
         setPasswords(decryptedData);
         setFilteredPasswords(decryptedData);
-      } else {
+      } 
+      else {
         Alert.alert('Info', result.message || 'No passwords found.');
       }
     } catch (err) {
@@ -120,13 +134,21 @@ export default function VaultScreen() {
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
-    } else {
+    } 
+    else {
       const query = searchQuery.toLowerCase();
       const filtered = passwords.filter((p) => {
         const nameMatch = p.account_name?.toLowerCase().includes(query);
         const usernameMatch = p.account_username?.toLowerCase().includes(query);
         const decryptedMatch = p.decrypted_pass?.toLowerCase().includes(query);
-        return nameMatch || usernameMatch || decryptedMatch;
+        if(nameMatch || usernameMatch || decryptedMatch)
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
       });
       setFilteredPasswords(filtered);
     }

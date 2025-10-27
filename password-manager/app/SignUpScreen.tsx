@@ -56,7 +56,8 @@ export default function SignUpScreen() {
         // Functional Requirement: Navigate back to Login after successful sign-up
         Alert.alert('Success', 'Account created!');
         navigation.navigate('LoginScreen');
-      } else {
+      } 
+      else {
         // Functional Requirement: Username uniqueness check
         Alert.alert('Error', 'Username already exists.');
       }
