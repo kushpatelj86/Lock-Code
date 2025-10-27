@@ -8,6 +8,8 @@ import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 import { generateRandomPassword } from './components/PasswordGenerator';
 
 export default function AddAccount() {
+  // Functional Requirement: Add / Edit / Delete Accounts
+  // The system shall allow the user to add new account credentials into the vault.
   const [description, setDescription] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,12 +22,18 @@ export default function AddAccount() {
   const router = useRouter();
   const timerRef = useRef<number | null>(null);
 
-  // Auto logout
+  // Functional Requirement: Automatic Logout
+  // The system shall automatically log out the user after a period of inactivity.
   async function handleLogout(auto = false) {
     try {
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
-      Alert.alert(auto ? 'Session expired' : 'Logged out', auto ? 'You were logged out due to inactivity.' : 'You have been logged out successfully.');
+      Alert.alert(
+        auto ? 'Session expired' : 'Logged out',
+        auto
+          ? 'You were logged out due to inactivity.'
+          : 'You have been logged out successfully.'
+      );
       router.replace('/LoginScreen');
     } catch (error) {
       console.error('Logout error:', error);
@@ -33,7 +41,8 @@ export default function AddAccount() {
     }
   }
 
-  // Start timer on mount
+  // Functional Requirement: Automatic Logout
+  // The system shall trigger auto logout after inactivity.
   useEffect(() => {
     timerRef.current = setTimeout(() => handleLogout(true), 6000000);
     return () => {
@@ -41,18 +50,19 @@ export default function AddAccount() {
     };
   }, []);
 
-  // Update crack time on password change
+  // Functional Requirement: Password Strength Evaluation
+  // The system shall evaluate the password’s strength and show the estimated crack time.
   useEffect(() => {
     if (password.length > 0) {
       const estimate = estimateCrackTime(password);
       setCrackTime(formatYears(estimate.years));
-    } 
-    else {
+    } else {
       setCrackTime('');
     }
   }, [password]);
 
-  // Add account handler
+  // Functional Requirement: Add / Edit / Delete Accounts
+  // The system shall allow users to store credentials securely in the database.
   async function handleAddAccount() {
     if (!description || !username || !password || !add_date || !expiry_date) {
       Alert.alert('Error', 'Please fill in all required fields.');
@@ -65,7 +75,9 @@ export default function AddAccount() {
       return;
     }
 
-    const encrypted_password = password; // placeholder for encryption
+    // Functional Requirement: Encryption
+    // The system shall store passwords in encrypted form.
+    const encrypted_password = password; // Placeholder for encryption
 
     try {
       const inserted = await insertPassword(
@@ -88,8 +100,7 @@ export default function AddAccount() {
         setAddDate('');
         setExpiryDate('');
         setNotes('');
-      } 
-      else {
+      } else {
         Alert.alert('Error', inserted.message);
       }
     } catch (error) {
@@ -99,8 +110,11 @@ export default function AddAccount() {
   }
 
   return (
+    // Functional Requirement: Add / Edit / Delete Accounts
+    // The system shall display an Add Account Screen to input new account credentials.
     <ScrollView contentContainerStyle={AddAccountStyles.container}>
       <View style={AddAccountStyles.form}>
+        
         <Text style={AddAccountStyles.label}>URL (optional)</Text>
         <TextInput value={url} onChangeText={setURL} style={AddAccountStyles.input} />
 
@@ -111,9 +125,15 @@ export default function AddAccount() {
         <TextInput value={username} onChangeText={setUsername} style={AddAccountStyles.input} />
 
         <Text style={AddAccountStyles.label}>Password *</Text>
-        <TextInput value={password} onChangeText={setPassword} secureTextEntry style={AddAccountStyles.input} />
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={AddAccountStyles.input}
+        />
 
-        {/* Generate Password Button */}
+        {/* Functional Requirement: Password Generation and Management
+            The system shall generate strong and unique passwords for each account. */}
         <TouchableOpacity
           style={[AddAccountStyles.button, { marginVertical: 10 }]}
           onPress={() => setPassword(generateRandomPassword(16))}
@@ -121,6 +141,8 @@ export default function AddAccount() {
           <Text style={AddAccountStyles.buttonText}>Generate Password</Text>
         </TouchableOpacity>
 
+        {/* Functional Requirement: Password Strength Evaluation
+            The system shall provide feedback on estimated password crack time. */}
         {password.length > 0 && (
           <Text style={{ marginBottom: 10, color: 'green' }}>
             Estimated crack time: {crackTime}
@@ -136,12 +158,18 @@ export default function AddAccount() {
         <Text style={AddAccountStyles.label}>Notes (optional)</Text>
         <TextInput value={notes} onChangeText={setNotes} style={AddAccountStyles.input} />
 
+        {/* Functional Requirement: Add / Edit / Delete Accounts
+            The system shall save new credentials securely to the vault. */}
         <TouchableOpacity style={AddAccountStyles.button} onPress={handleAddAccount}>
           <Text style={AddAccountStyles.buttonText}>Add Account</Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={AddAccountStyles.registrationLink}>Don't have an account? Register</Text>
+      {/* Functional Requirement: Master Password Login
+          The system shall allow users to register or log in securely. */}
+      <Text style={AddAccountStyles.registrationLink}>
+        Don't have an account? Register
+      </Text>
     </ScrollView>
   );
 }
