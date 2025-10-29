@@ -65,7 +65,10 @@ export default function VaultScreen() {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
-    timerRef.current = setTimeout(() => handleLogout(true), AUTO_LOGOUT_MS);
+    timerRef.current = setTimeout(() =>
+       handleLogout(true)
+    
+    , AUTO_LOGOUT_MS);
   }
 
   // Start timer on mount
@@ -104,6 +107,21 @@ export default function VaultScreen() {
                 const estimated = estimateCrackTime(decrypted_pass);
                 crackTime = formatYears(estimated.years);
               }
+              if (item.expiry_date) {
+                const currentDate = new Date();
+
+                const expiryDate = new Date(item.expiry_date);
+
+                if(currentDate > expiryDate)
+                {
+                  Alert.alert(
+                    'Password Expired',
+                    `The password for "${item.password_id}" has expired. Please update it.`
+                  );
+                }
+              }
+
+
 
               decryptedData.push({ ...item, decrypted_pass, crackTime });
 
@@ -136,8 +154,8 @@ export default function VaultScreen() {
       setFilteredPasswords(passwords);
     } 
     else {
-      const query = searchQuery.toLowerCase();
-      const filtered = passwords.filter((p) => {
+        const query = searchQuery.toLowerCase();
+        const filtered = passwords.filter((p) => {
         const nameMatch = p.account_name?.toLowerCase().includes(query);
         const usernameMatch = p.account_username?.toLowerCase().includes(query);
         const decryptedMatch = p.decrypted_pass?.toLowerCase().includes(query);
