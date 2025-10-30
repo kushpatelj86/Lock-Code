@@ -7,6 +7,7 @@ import HomeScreen from './HomeScreen';
 import AddAccount from './AddAccount';
 import VaultScreen from './VaultScreen';
 import { initDatabase } from '../utils/database';
+import UpdateAccount from './UpdateAccount';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
@@ -14,6 +15,8 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   AddAccount: undefined;
   VaultScreen: undefined;
+  UpdateAccount: undefined;
+
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -47,6 +50,12 @@ export default function App() {
           name="AddAccount"
           component={AddAccount}
           options={{ headerShown: true, title: 'Add Account' }}
+        />
+
+        <Stack.Screen
+          name="UpdateAccount"
+          component={UpdateAccount}
+          options={{ headerShown: true, title: 'Update Account' }}
         />
 
         <Stack.Screen

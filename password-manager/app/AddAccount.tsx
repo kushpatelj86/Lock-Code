@@ -44,7 +44,7 @@ export default function AddAccount() {
   // Functional Requirement: Automatic Logout
   // The system shall trigger auto logout after inactivity.
   useEffect(() => {
-    timerRef.current = setTimeout(() => handleLogout(true), 6000000);
+    timerRef.current = setTimeout(() => handleLogout(true), 600000);
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);

@@ -215,3 +215,54 @@ export async function retrievePassword(userId: number) {
     return { success: false, message: "Failed to retrieve passwords." };
   }
 }
+
+
+export async function updatePassword(  userid: number,password: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  const { encrypted, iv } = await encrypt(password);
+
+
+  console.log('Retrieving passwords for user:', password);
+
+  try {
+    const results = db.getAllSync(
+  `UPDATE PASSWORD SET encrypted_pass = ${encrypted},iv = ${iv} WHERE user_id = '${userid}' `
+);
+
+  console.log(`Password updated successfully for user_id: ${userid}`);
+    return { success: true, message: 'Password updated successfully.' };
+    
+    
+
+  } catch (error) {
+    console.error('Error updating password:', error);
+    return { success: false, message: 'Failed to update password.' };
+  }
+}
+
+
+
+export async function updateUsername(  userid: number,username: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+
+
+  console.log('Retrieving passwords for user:', username);
+
+  try {
+    const results = db.getAllSync(
+  `UPDATE PASSWORD SET account_username = ${username} WHERE user_id = '${userid}' `
+);
+
+  console.log(`Password updated successfully for user_id: ${userid}`);
+    return { success: true, message: 'Password updated successfully.' };
+    
+    
+
+  } catch (error) {
+    console.error('Error updating password:', error);
+    return { success: false, message: 'Failed to update password.' };
+  }
+}
+

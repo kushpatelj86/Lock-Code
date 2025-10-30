@@ -19,15 +19,21 @@ type Password = {
   crackTime?: string; 
 };
 
-interface AccountCardProps {
+
+interface AccountListProps {
   item: Password;
 }
 
-export default function AccountCard({ item }: AccountCardProps) {
+
+
+
+export default function AccountList({ item }: AccountListProps) {
   const maskedIndicator = '••••••••'; // fixed 8 bullets
 
   return (
     <View style={styles.card}>
+      <Text style={styles.title}>User Id: {item.user_id}</Text>
+
       <Text style={styles.title}>Account Name: {item.account_name}</Text>
       <Text>Username: {item.account_username}</Text>
 
@@ -49,20 +55,6 @@ export default function AccountCard({ item }: AccountCardProps) {
       {item.add_date && <Text>Added: {item.add_date}</Text>}
       {item.expiry_date && <Text>Expires: {item.expiry_date}</Text>}
       {item.notes && <Text>Notes: {item.notes}</Text>}
-
-      <TouchableOpacity
-        onPress={() => copyToClipboard(item.decrypted_pass)}
-        style={{
-          backgroundColor: '#007AFF',
-          paddingVertical: 8,
-          paddingHorizontal: 12,
-          borderRadius: 8,
-          marginTop: 10,
-          alignSelf: 'flex-start',
-        }}
-      >
-        <Text style={{ color: '#fff', fontWeight: '600' }}>Copy Password</Text>
-      </TouchableOpacity>
     </View>
   );
 }

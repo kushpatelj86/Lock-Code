@@ -18,6 +18,11 @@ export default function Navbar() {
       <TouchableOpacity style={styles.button} onPress={() => router.push('/VaultScreen')}>
         <Text style={styles.buttonText}>Vault</Text>
       </TouchableOpacity>
+
+
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/UpdateAccount')}>
+        <Text style={styles.buttonText}>Update Account</Text>
+      </TouchableOpacity>
     </View>
   );
 }

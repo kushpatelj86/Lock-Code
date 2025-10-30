@@ -5,13 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
 import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
-import AccountCard from './components/AccountCard';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { updatePassword } from '../utils/database';
 import {generateRandomPassword} from './components/PasswordGenerator';
+import AccountList from './components/AccountList';
 
 // VaultScreen navigation type
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
@@ -34,7 +34,7 @@ type Password = {
 // Auto logout timeout in milliseconds
 const AUTO_LOGOUT_MS = 10000; // 10 seconds, adjust as needed
 
-export default function VaultScreen() {
+export default function UpdateAccount() {
   const navigation = useNavigation<VaultScreenNavigationProp>();
   const timerRef = useRef<number | null>(null);
 
@@ -192,7 +192,7 @@ export default function VaultScreen() {
       }}
     >
       <View style={{ flex: 1, padding: 20 }}>
-        <Text style={homescreenstyles.title}>Welcome to Vault Screen</Text>
+        <Text style={homescreenstyles.title}>Update Account</Text>
         <Text style={homescreenstyles.subtitle}>
           Here is a list of all your credentials
         </Text>
@@ -212,7 +212,7 @@ export default function VaultScreen() {
 
         <ScrollView>
           {filteredPasswords.length > 0 ? (
-            filteredPasswords.map((item) => <AccountCard key={item.password_id} item={item} />)
+            filteredPasswords.map((item) => <AccountList key={item.password_id} item={item} />)
           ) : (
             <Text>No results found</Text>
           )}
