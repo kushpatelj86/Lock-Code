@@ -22,6 +22,7 @@ type Password = {
 
 interface AccountListProps {
   item: Password;
+   onPress?: () => void; 
 }
 
 
