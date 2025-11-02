@@ -18,6 +18,7 @@ export default function AddAccount() {
   const [expiry_date, setExpiryDate] = useState('');
   const [notes, setNotes] = useState('');
   const [crackTime, setCrackTime] = useState('');
+const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
 
   const router = useRouter();
   const timerRef = useRef<number | null>(null);
@@ -41,17 +42,26 @@ export default function AddAccount() {
     }
   }
 
-  // Functional Requirement: Automatic Logout
-  // The system shall trigger auto logout after inactivity.
-  useEffect(() => {
-    timerRef.current = setTimeout(() => handleLogout(true), 600000);
-    return () => {
+  // Reset the auto-logout timer
+    function resetTimer() {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
-    };
-  }, []);
-
+      timerRef.current = setTimeout(() =>
+         handleLogout(true)
+      
+      , AUTO_LOGOUT_MS);
+    }
+  
+    // Start timer on mount
+    useEffect(() => {
+      resetTimer();
+      return () => {
+        if (timerRef.current){ 
+          clearTimeout(timerRef.current);
+        }
+      };
+    }, []);
   // Functional Requirement: Password Strength Evaluation
   // The system shall evaluate the password’s strength and show the estimated crack time.
   useEffect(() => {

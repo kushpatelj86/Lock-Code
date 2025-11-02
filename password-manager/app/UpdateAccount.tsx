@@ -31,7 +31,7 @@ type Password = {
 };
 
 // Auto logout timeout in milliseconds
-const AUTO_LOGOUT_MS = 10000; // 10 seconds, adjust as needed
+const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
 
 export default function UpdateAccount() {
   const navigation = useNavigation<VaultScreenNavigationProp>();
@@ -166,92 +166,95 @@ export default function UpdateAccount() {
   }
 
 
-  async function handleUpdatePassword() {
-    if (!newPassword ) 
-    {
-      Alert.alert('Error', 'Please fill in the required field.');
-      return;
+async function handleUpdatePassword() {
+  if (!newPassword || !selectedAccount) {
+    Alert.alert('Error', 'Please select an account and enter a new password.');
+    return;
+  }
+
+  try {
+    const result = await updatePassword(selectedAccount.password_id, newPassword);
+
+    if (result.success) {
+      // Update state immediately so UI refreshes
+      setPasswords((prev) =>
+        prev.map((p) =>
+          p.password_id === selectedAccount.password_id
+            ? { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword } // optional: decrypted_pass if needed
+            : p
+        )
+      );
+
+      setFilteredPasswords((prev) =>
+        prev.map((p) =>
+          p.password_id === selectedAccount.password_id
+            ? { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword }
+            : p
+        )
+      );
+
+      setSelectedAccount((prev) =>
+        prev ? { ...prev, encrypted_pass: newPassword, decrypted_pass: newPassword } : prev
+      );
+
+      Alert.alert('Success', 'Password updated!');
+      setNewPassword('');
+    } else {
+      Alert.alert('Error', result.message || 'Update failed.');
     }
+  } catch (error) {
+    console.error(error);
+    Alert.alert('Error', 'Something went wrong. Try again.');
+  }
+}
 
-    const storedUserId = await AsyncStorage.getItem('loggedInUserId');
-    if (!storedUserId) 
-    {
-      Alert.alert('Error', 'No logged in user found.');
-      return;
+
+
+async function handleUpdateUsername() {
+  if (!newUsername || !selectedAccount) {
+    Alert.alert('Error', 'Please select an account and enter a new username.');
+    return;
+  }
+
+  try {
+    const result = await updateUsername(selectedAccount.password_id, newUsername);
+
+    if (result.success) {
+      // Update state immediately
+      setPasswords((prev) =>
+        prev.map((p) =>
+          p.password_id === selectedAccount.password_id
+            ? { ...p, account_username: newUsername }
+            : p
+        )
+      );
+
+      setFilteredPasswords((prev) =>
+        prev.map((p) =>
+          p.password_id === selectedAccount.password_id
+            ? { ...p, account_username: newUsername }
+            : p
+        )
+      );
+
+      setSelectedAccount((prev) =>
+        prev ? { ...prev, account_username: newUsername } : prev
+      );
+
+      Alert.alert('Success', 'Username updated!');
+      setNewUsername('');
+    } 
+    else {
+      Alert.alert('Error', result.message || 'Update failed.');
     }
-
-     try {
-          const inserted = await updatePassword(
-            Number(storedUserId),
-           newPassword
-         );
-
-         if (inserted.success) 
-         {
-            Alert.alert('Success', 'Account created!');
-            setNewPassword('');
-          
-         } 
-        else 
-        {
-          Alert.alert('Error', inserted.message);
-        }
+  } catch (error) {
+    console.error(error);
+    Alert.alert('Error', 'Something went wrong. Try again.');
   }
-  catch(error){
-     console.error(error);
-     Alert.alert('Error', 'Something went wrong. Try again.');
-  }
+}
 
 
 
-  }
-
-
-
-
-
-  async function handleUpdateUsername() {
-    if (!newUsername ) 
-    {
-      Alert.alert('Error', 'Please fill in the required field.');
-      return;
-    }
-
-    const storedUserId = await AsyncStorage.getItem('loggedInUserId');
-    if (!storedUserId) 
-    {
-      Alert.alert('Error', 'No logged in user found.');
-      return;
-    }
-
-     try {
-          const inserted = await updateUsername(
-            Number(storedUserId),
-           newUsername
-         );
-
-         if (inserted.success) 
-         {
-            Alert.alert('Success', 'Account created!');
-            setNewPassword('');
-          
-         } 
-        else 
-        {
-          Alert.alert('Error', inserted.message);
-        }
-  }
-  catch(error){
-     console.error(error);
-     Alert.alert('Error', 'Something went wrong. Try again.');
-  }
-
-
-
-  }
-
-
-  // Filter passwords based on search query
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
@@ -281,62 +284,73 @@ export default function UpdateAccount() {
   }
 
   // Wrap the screen in a touchable to detect interactions and reset timer
-  return (
-    <TouchableWithoutFeedback
-      onPress={() => {
+ return (
+  <TouchableWithoutFeedback
+    onPress={(event) => {
+      const target = event.target as any;
+      const isTextInput =
+        target && (target._internalFiberInstanceHandleDEV?.type === TextInput);
+
+      if (!isTextInput) {
         Keyboard.dismiss();
         resetTimer();
-      }}
-    >
-      <View style={{ flex: 1, padding: 20 }}>
-        <Text style={homescreenstyles.title}>Update Account</Text>
+      }
+    }}
+  >
+    <View style={{ flex: 1, padding: 20 }}>
+      <Text style={homescreenstyles.title}>Update Account</Text>
 
-        <SearchBar
-          value={searchQuery}
-          onChange={(text) => {
-            setSearchQuery(text);
-            resetTimer();
-          }}
-          onClear={() => setSearchQuery('')}
-          placeholder="Search accounts..."
-        />
+      <SearchBar
+        value={searchQuery}
+        onChange={(text) => {
+          setSearchQuery(text);
+          resetTimer();
+        }}
+        onClear={() => setSearchQuery('')}
+        placeholder="Search accounts..."
+      />
 
-        <ScrollView style={{ marginBottom: 20 }}>
-          {filteredPasswords.length > 0 ? (
-            filteredPasswords.map((item) => (
-              <AccountList key={item.password_id} item={item} onPress={() => handleSelectAccount(item)} />
-            ))
-          ) : (
-            <Text>No results found</Text>
-          )}
-        </ScrollView>
-
-        {selectedAccount && (
-          <View style={{ marginTop: 10 }}>
-            <Text style={{ fontWeight: 'bold' }}>Selected: {selectedAccount.account_name}</Text>
-
-            <Text>Update Password</Text>
-            <TextInput
-              value={newPassword}
-              onChangeText={setNewPassword}
-              
-              placeholder="Enter new password"
+      <ScrollView style={{ marginBottom: 20 }}>
+        {filteredPasswords.length > 0 ? (
+          filteredPasswords.map((item) => (
+            <AccountList
+              key={item.password_id}
+              item={item}
+              onPress={() => handleSelectAccount(item)}
             />
-            <Button title="Update Password" onPress={handleUpdatePassword} />
-
-            <Text style={{ marginTop: 15 }}>Update Username</Text>
-            <TextInput
-              value={newUsername}
-              onChangeText={setNewUsername}
-              
-              placeholder="Enter new username"
-            />
-            <Button title="Update Username" onPress={handleUpdateUsername} />
-
-            
-          </View>
+          ))
+        ) : (
+          <Text>No results found</Text>
         )}
-      </View>
-    </TouchableWithoutFeedback>
-  );
+      </ScrollView>
+
+      {selectedAccount && (
+        <View style={{ marginTop: 10 }}>
+          <Text style={{ fontWeight: 'bold' }}>
+            Selected: {selectedAccount.account_name}
+          </Text>
+
+          <Text>Update Password</Text>
+          <TextInput
+            value={newPassword}
+            onChangeText={setNewPassword}
+            placeholder="Enter new password"
+            
+          />
+          <Button title="Update Password" onPress={handleUpdatePassword} />
+
+          <Text style={{ marginTop: 15 }}>Update Username</Text>
+          <TextInput
+            value={newUsername}
+            onChangeText={setNewUsername}
+            placeholder="Enter new username"
+           
+          />
+          <Button title="Update Username" onPress={handleUpdateUsername} />
+        </View>
+      )}
+    </View>
+  </TouchableWithoutFeedback>
+);
+
 }

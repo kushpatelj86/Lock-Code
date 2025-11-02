@@ -1,8 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from './styles/AccountCardStyling';
-import { copyToClipboard } from '../components/clipboardCopy';
 
 type Password = {
   password_id: number;
@@ -19,22 +17,17 @@ type Password = {
   crackTime?: string; 
 };
 
-
 interface AccountListProps {
   item: Password;
-   onPress?: () => void; 
+  onPress?: () => void; 
 }
 
-
-
-
-export default function AccountList({ item }: AccountListProps) {
+export default function AccountList({ item, onPress }: AccountListProps) {
   const maskedIndicator = '••••••••'; // fixed 8 bullets
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.card}>
       <Text style={styles.title}>User Id: {item.user_id}</Text>
-
       <Text style={styles.title}>Account Name: {item.account_name}</Text>
       <Text>Username: {item.account_username}</Text>
 
@@ -45,7 +38,6 @@ export default function AccountList({ item }: AccountListProps) {
         </Text>
       </View>
 
-      {/* Display precomputed crack time if available */}
       {item.crackTime && (
         <Text style={{ color: 'green', marginTop: 2 }}>
           Estimated crack time: {item.crackTime}
@@ -56,6 +48,6 @@ export default function AccountList({ item }: AccountListProps) {
       {item.add_date && <Text>Added: {item.add_date}</Text>}
       {item.expiry_date && <Text>Expires: {item.expiry_date}</Text>}
       {item.notes && <Text>Notes: {item.notes}</Text>}
-    </View>
+    </TouchableOpacity>
   );
 }

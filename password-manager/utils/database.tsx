@@ -243,26 +243,25 @@ export async function updatePassword(  userid: number,password: string) {
 
 
 
-export async function updateUsername(  userid: number,username: string) {
+export async function updateUsername(userid: number, username: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
+  //sanitizes input
+  const safeUsername = username.replace(/'/g, "''");
 
-
-  console.log('Retrieving passwords for user:', username);
+  console.log('Updating username for user_id:', userid);
 
   try {
     const results = db.getAllSync(
-  `UPDATE PASSWORD SET account_username = ${username} WHERE user_id = '${userid}' `
-);
+      `UPDATE PASSWORD SET account_username = '${safeUsername}' WHERE user_id = '${userid}'`
+    );
 
-  console.log(`Password updated successfully for user_id: ${userid}`);
-    return { success: true, message: 'Password updated successfully.' };
-    
-    
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Username updated successfully.' };
 
   } catch (error) {
-    console.error('Error updating password:', error);
-    return { success: false, message: 'Failed to update password.' };
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
   }
 }
-
