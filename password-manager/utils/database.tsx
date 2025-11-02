@@ -265,3 +265,131 @@ export async function updateUsername(userid: number, username: string) {
     return { success: false, message: 'Failed to update username.' };
   }
 }
+
+
+
+
+export async function updateName(userid: number, name: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  //sanitizes input
+  const safeName = name.replace(/'/g, "''");
+
+  console.log('Updating username for user_id:', userid);
+
+  try {
+    const results = db.getAllSync(
+      `UPDATE PASSWORD SET account_name = '${safeName}' WHERE user_id = '${userid}'`
+    );
+
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Username updated successfully.' };
+
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
+}
+
+
+
+export async function updateURL(userid: number, url: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  //sanitizes input
+  const safeURL = url.replace(/'/g, "''");
+
+  console.log('Updating username for user_id:', userid);
+
+  try {
+    const results = db.getAllSync(
+      `UPDATE PASSWORD SET url = '${safeURL}' WHERE user_id = '${userid}'`
+    );
+
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Username updated successfully.' };
+
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
+}
+
+
+
+export async function updateAddDate(userid: number, add_date: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  //sanitizes input
+  const safeAddURL = add_date.replace(/'/g, "''");
+
+  console.log('Updating username for user_id:', userid);
+
+  try {
+    const results = db.getAllSync(
+      `UPDATE PASSWORD SET add_date = '${safeAddURL}' WHERE user_id = '${userid}'`
+    );
+
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Username updated successfully.' };
+
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
+}
+
+
+
+export async function updateExpiryDate(userid: number, expiry_date: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  //sanitizes input
+  const safeExpiryDate = expiry_date.replace(/'/g, "''");
+
+  console.log('Updating username for user_id:', userid);
+
+  try {
+    const results = db.getAllSync(
+      `UPDATE PASSWORD SET expiry_date = '${safeExpiryDate}' WHERE user_id = '${userid}'`
+    );
+
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Username updated successfully.' };
+
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
+}
+
+
+
+
+
+export async function updateNotes(userid: number, notes: string) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  //sanitizes input
+  const safeNotes = notes.replace(/'/g, "''");
+
+  console.log('Updating username for user_id:', userid);
+
+  try {
+    const results = db.getAllSync(
+      `UPDATE PASSWORD SET expiry_date = '${safeNotes}' WHERE user_id = '${userid}'`
+    );
+
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Username updated successfully.' };
+
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
+}
