@@ -166,6 +166,44 @@ export default function UpdateAccount() {
   }
 
 
+
+function updatePasswordCards() {
+  if (!selectedAccount){ 
+    return;
+  } 
+
+let index = -1; 
+
+for (let i = 0; i < filteredPasswords.length; i++) 
+{
+  const passwordItem = filteredPasswords[i];
+
+  if (passwordItem.password_id === selectedAccount.password_id) 
+  {
+    index = i; 
+    break;
+  }
+}
+
+if (index !== -1) 
+{
+  const updatedPasswords = [...filteredPasswords]; 
+  updatedPasswords[index] = {
+    ...updatedPasswords[index],
+    encrypted_pass: newPassword,
+    decrypted_pass: newPassword,
+  };
+  setFilteredPasswords(updatedPasswords); 
+}
+
+  
+}
+
+
+
+
+
+
 async function handleUpdatePassword() {
   if (!newPassword || !selectedAccount) {
     Alert.alert('Error', 'Please select an account and enter a new password.');
@@ -176,30 +214,20 @@ async function handleUpdatePassword() {
     const result = await updatePassword(selectedAccount.password_id, newPassword);
 
     if (result.success) {
-      // Update state immediately so UI refreshes
       setPasswords((prev) =>
         prev.map((p) =>
           p.password_id === selectedAccount.password_id
-            ? { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword } // optional: decrypted_pass if needed
+            ? { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword } 
             : p
         )
       );
 
-      setFilteredPasswords((prev) =>
-        prev.map((p) =>
-          p.password_id === selectedAccount.password_id
-            ? { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword }
-            : p
-        )
-      );
-
-      setSelectedAccount((prev) =>
-        prev ? { ...prev, encrypted_pass: newPassword, decrypted_pass: newPassword } : prev
-      );
+      updatePasswordCards()
 
       Alert.alert('Success', 'Password updated!');
       setNewPassword('');
-    } else {
+    } 
+    else {
       Alert.alert('Error', result.message || 'Update failed.');
     }
   } catch (error) {
@@ -220,7 +248,6 @@ async function handleUpdateUsername() {
     const result = await updateUsername(selectedAccount.password_id, newUsername);
 
     if (result.success) {
-      // Update state immediately
       setPasswords((prev) =>
         prev.map((p) =>
           p.password_id === selectedAccount.password_id
@@ -229,17 +256,7 @@ async function handleUpdateUsername() {
         )
       );
 
-      setFilteredPasswords((prev) =>
-        prev.map((p) =>
-          p.password_id === selectedAccount.password_id
-            ? { ...p, account_username: newUsername }
-            : p
-        )
-      );
-
-      setSelectedAccount((prev) =>
-        prev ? { ...prev, account_username: newUsername } : prev
-      );
+      updatePasswordCards();
 
       Alert.alert('Success', 'Username updated!');
       setNewUsername('');
