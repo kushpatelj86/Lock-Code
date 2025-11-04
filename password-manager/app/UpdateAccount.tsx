@@ -214,16 +214,22 @@ async function handleUpdatePassword() {
     const result = await updatePassword(selectedAccount.password_id, newPassword);
 
     if (result.success) {
-      setPasswords((prev) =>
-        prev.map((p) =>
-          p.password_id === selectedAccount.password_id
-            ? { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword } 
-            : p
-        )
-      );
+      setPasswords((prev) => {
+        const updated = [];
 
-      updatePasswordCards()
+        for (const p of prev) {
+          if (p.password_id === selectedAccount.password_id) {
+            updated.push({...p,encrypted_pass: newPassword,decrypted_pass: newPassword,});
+          } 
+          else {
+            updated.push(p);
+          }
+        }
 
+        return updated;
+      });
+
+      updatePasswordCards();
       Alert.alert('Success', 'Password updated!');
       setNewPassword('');
     } 
@@ -248,18 +254,24 @@ async function handleUpdateUsername() {
     const result = await updateUsername(selectedAccount.password_id, newUsername);
 
     if (result.success) {
-      setPasswords((prev) =>
-        prev.map((p) =>
-          p.password_id === selectedAccount.password_id
-            ? { ...p, account_username: newUsername }
-            : p
-        )
-      );
+      setPasswords((prev) => {
+        const updated = [];
+
+        for (const p of prev) {
+          if (p.password_id === selectedAccount.password_id) {
+            updated.push({...p,encrypted_pass: newPassword,decrypted_pass: newPassword,});
+          } 
+          else {
+            updated.push(p);
+          }
+        }
+
+        return updated;
+      });
 
       updatePasswordCards();
-
-      Alert.alert('Success', 'Username updated!');
-      setNewUsername('');
+      Alert.alert('Success', 'Password updated!');
+      setNewPassword('');
     } 
     else {
       Alert.alert('Error', result.message || 'Update failed.');
