@@ -2,17 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Alert, ScrollView, TouchableWithoutFeedback, Keyboard, TextInput, Button } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { retrievePassword, updateUsername,updatePassword } from '../utils/database';
+import { retrievePassword, updateUsername, updatePassword, updateName } from '../utils/database';
 import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
-import {generateRandomPassword} from './components/PasswordGenerator';
+import { generateRandomPassword } from './components/PasswordGenerator';
 import AccountList from './components/AccountList';
 
-// VaultScreen navigation type
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
 type Password = {
@@ -30,8 +29,7 @@ type Password = {
   crackTime?: string;
 };
 
-// Auto logout timeout in milliseconds
-const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
+const AUTO_LOGOUT_MS = 600000; // 10 minutes
 
 export default function UpdateAccount() {
   const navigation = useNavigation<VaultScreenNavigationProp>();
@@ -41,23 +39,17 @@ export default function UpdateAccount() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Password | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [newUsername, setNewUsername] = useState('');
+  const [newName, setNewName] = useState('');
 
-    const [newPassword, setNewPassword] = useState('');
-
-    const [newUsername, setNewUsername] = useState('');
-
-  // Logout function
+  // Auto logout
   async function handleLogout(auto = false) {
     try {
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
 
-      if (auto) {
-        Alert.alert('Session expired', 'You were logged out due to inactivity.');
-      } 
-      else {
-        Alert.alert('Logged out', 'You have been logged out successfully.');
-      }
+      Alert.alert(auto ? 'Session expired' : 'Logged out', auto ? 'You were logged out due to inactivity.' : 'You have been logged out successfully.');
 
       navigation.replace('LoginScreen');
     } catch (error) {
@@ -66,28 +58,19 @@ export default function UpdateAccount() {
     }
   }
 
-  // Reset the auto-logout timer
   function resetTimer() {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    timerRef.current = setTimeout(() =>
-       handleLogout(true)
-    
-    , AUTO_LOGOUT_MS);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => handleLogout(true), AUTO_LOGOUT_MS);
   }
 
-  // Start timer on mount
   useEffect(() => {
     resetTimer();
     return () => {
-      if (timerRef.current){ 
-        clearTimeout(timerRef.current);
-      }
+      if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
 
-  // Load passwords from DB
+  // Load passwords
   useEffect(() => {
     getPasswords();
   }, []);
@@ -102,49 +85,35 @@ export default function UpdateAccount() {
 
       const result = await retrievePassword(Number(storedUserId));
       if (result.success && result.data) {
-          const decryptedData: Password[] = [];
-          for (const item of result.data as Password[]) {
-            try {
-              const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
-              let crackTime = '';
+        const decryptedData: Password[] = [];
 
-              if (decrypted_pass) 
-              {
-                const estimated = estimateCrackTime(decrypted_pass);
-                crackTime = formatYears(estimated.years);
-              }
-              if (item.expiry_date) {
-                const currentDate = new Date();
+        for (const item of result.data as Password[]) {
+          try {
+            const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
+            let crackTime = '';
 
-                const expiryDate = new Date(item.expiry_date);
-
-                if(currentDate > expiryDate)
-                {
-                  Alert.alert(
-                    'Password Expired',
-                    `The password for "${item.password_id}" has expired. Please update it.`
-  
-                  );
-
-                  const newPassword = generateRandomPassword();
-                  updatePassword(item.user_id,newPassword);
-                }
-              }
-
-
-
-              decryptedData.push({ ...item, decrypted_pass, crackTime });
-
-            } catch (error) {
-              console.error('Failed to decrypt password for', item.account_name, error);
-              decryptedData.push({ ...item, decrypted_pass: 'Error decrypting', crackTime: '' });
+            if (decrypted_pass) {
+              const estimated = estimateCrackTime(decrypted_pass);
+              crackTime = formatYears(estimated.years);
             }
-            
-            
 
+            if (item.expiry_date) {
+              const currentDate = new Date();
+              const expiryDate = new Date(item.expiry_date);
 
+              if (currentDate > expiryDate) {
+                Alert.alert('Password Expired', `The password for "${item.account_name}" has expired. Generating a new password.`);
+                const newPass = generateRandomPassword();
+                await updatePassword(item.user_id, item.password_id, newPass);
+              }
+            }
+
+            decryptedData.push({ ...item, decrypted_pass, crackTime });
+          } catch (error) {
+            console.error('Failed to decrypt password for', item.account_name, error);
+            decryptedData.push({ ...item, decrypted_pass: 'Error decrypting', crackTime: '' });
           }
-
+        }
 
         setPasswords(decryptedData);
         setFilteredPasswords(decryptedData);
@@ -158,152 +127,137 @@ export default function UpdateAccount() {
     }
   }
 
-
-    async function handleSelectAccount(account: Password) {
-      setSelectedAccount(account);
-      setNewPassword('');
-      setNewUsername('');
+  async function handleSelectAccount(account: Password) {
+    setSelectedAccount(account);
+    setNewPassword('');
+    setNewUsername('');
+    setNewName('');
   }
 
-
-
-function updatePasswordCards() {
-  if (!selectedAccount){ 
-    return;
-  } 
-
-let index = -1; 
-
-for (let i = 0; i < filteredPasswords.length; i++) 
-{
-  const passwordItem = filteredPasswords[i];
-
-  if (passwordItem.password_id === selectedAccount.password_id) 
-  {
-    index = i; 
-    break;
-  }
-}
-
-if (index !== -1) 
-{
-  const updatedPasswords = [...filteredPasswords]; 
-  updatedPasswords[index] = {
-    ...updatedPasswords[index],
-    encrypted_pass: newPassword,
-    decrypted_pass: newPassword,
-  };
-  setFilteredPasswords(updatedPasswords); 
-}
-
-  
-}
-
-
-
-
-
-
-async function handleUpdatePassword() {
-  if (!newPassword || !selectedAccount) {
-    Alert.alert('Error', 'Please select an account and enter a new password.');
-    return;
-  }
-
-  try {
-    const result = await updatePassword(selectedAccount.password_id, newPassword);
-
-    if (result.success) {
-      setPasswords((prev) => {
-        const updated = [];
-
-        for (const p of prev) {
-          if (p.password_id === selectedAccount.password_id) {
-            updated.push({...p,encrypted_pass: newPassword,decrypted_pass: newPassword,});
-          } 
-          else {
-            updated.push(p);
-          }
-        }
-
-        return updated;
-      });
-
-      updatePasswordCards();
-      Alert.alert('Success', 'Password updated!');
-      setNewPassword('');
-    } 
-    else {
-      Alert.alert('Error', result.message || 'Update failed.');
+  // Update handlers
+  async function handleUpdatePassword() {
+    if (!newPassword || !selectedAccount) {
+      Alert.alert('Error', 'Please select an account and enter a new password.');
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    Alert.alert('Error', 'Something went wrong. Try again.');
-  }
-}
 
+    const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
 
-
-async function handleUpdateUsername() {
-  if (!newUsername || !selectedAccount) {
-    Alert.alert('Error', 'Please select an account and enter a new username.');
-    return;
-  }
-
-  try {
-    const result = await updateUsername(selectedAccount.password_id, newUsername);
-
-    if (result.success) {
-      setPasswords((prev) => {
-        const updated = [];
-
-        for (const p of prev) {
-          if (p.password_id === selectedAccount.password_id) {
-            updated.push({...p,encrypted_pass: newPassword,decrypted_pass: newPassword,});
-          } 
-          else {
-            updated.push(p);
+    try {
+      const result = await updatePassword(storedUserId, selectedAccount.password_id, newPassword);
+      if (result.success) {
+        setPasswords(prev =>
+          prev.map(p =>
+        {    
+          if (p.password_id === selectedAccount.password_id) 
+          {
+            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
           }
-        }
-
-        return updated;
-      });
-
-      updatePasswordCards();
-      Alert.alert('Success', 'Password updated!');
-      setNewPassword('');
-    } 
-    else {
-      Alert.alert('Error', result.message || 'Update failed.');
+          else
+          {
+            return p;
+          }
+          })
+        );
+        Alert.alert('Success', 'Password updated!');
+        setNewPassword('');
+      } 
+      else {
+        Alert.alert('Error', result.message || 'Update failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
     }
-  } catch (error) {
-    console.error(error);
-    Alert.alert('Error', 'Something went wrong. Try again.');
   }
-}
 
+  async function handleUpdateUsername() {
+    if (!newUsername || !selectedAccount) {
+      Alert.alert('Error', 'Please select an account and enter a new username.');
+      return;
+    }
 
+    const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
 
+    try {
+      const result = await updateUsername(storedUserId, selectedAccount.password_id, newUsername);
+      if (result.success) {
+        setPasswords(prev =>
+          prev.map(p =>
+        {    
+          if (p.password_id === selectedAccount.password_id) 
+          {
+            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+          }
+          else
+          {
+            return p;
+          }
+          })
+        );
+        Alert.alert('Success', 'Password updated!');
+        setNewPassword('');
+      } 
+      else {
+        Alert.alert('Error', result.message || 'Update failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
+    }
+  }
+
+  async function handleUpdateName() {
+    if (!newName || !selectedAccount) {
+      Alert.alert('Error', 'Please select an account and enter a new name.');
+      return;
+    }
+
+    const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
+
+    try {
+      const result = await updateName(storedUserId, newName);
+      if (result.success) {
+        setPasswords(prev =>
+          prev.map(p =>
+        {    
+          if (p.password_id === selectedAccount.password_id) 
+          {
+            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+          }
+          else
+          {
+            return p;
+          }
+          })
+        );
+        Alert.alert('Success', 'Password updated!');
+        setNewPassword('');
+      } 
+      else {
+        Alert.alert('Error', result.message || 'Update failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
+    }
+  }
+
+  // Search filter
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
     } 
     else {
-        const query = searchQuery.toLowerCase();
-        const filtered = passwords.filter((p) => {
-        const nameMatch = p.account_name?.toLowerCase().includes(query);
-        const usernameMatch = p.account_username?.toLowerCase().includes(query);
-        const decryptedMatch = p.decrypted_pass?.toLowerCase().includes(query);
-        if(nameMatch || usernameMatch || decryptedMatch)
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      });
-      setFilteredPasswords(filtered);
+      const query = searchQuery.toLowerCase();
+      setFilteredPasswords(
+        passwords.filter(
+          p =>
+            p.account_name?.toLowerCase().includes(query) ||
+            p.account_username?.toLowerCase().includes(query) ||
+            p.decrypted_pass?.toLowerCase().includes(query)
+        )
+      );
     }
   }, [searchQuery, passwords]);
 
@@ -312,74 +266,76 @@ async function handleUpdateUsername() {
     setFilteredPasswords(passwords);
   }
 
-  // Wrap the screen in a touchable to detect interactions and reset timer
- return (
-  <TouchableWithoutFeedback
-    onPress={(event) => {
-      const target = event.target as any;
-      const isTextInput =
-        target && (target._internalFiberInstanceHandleDEV?.type === TextInput);
-
-      if (!isTextInput) {
-        Keyboard.dismiss();
-        resetTimer();
-      }
-    }}
-  >
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text style={homescreenstyles.title}>Update Account</Text>
-
-      <SearchBar
-        value={searchQuery}
-        onChange={(text) => {
-          setSearchQuery(text);
+  return (
+    <TouchableWithoutFeedback
+      onPress={(event) => {
+        const target = event.target as any;
+        const isTextInput = target && target._internalFiberInstanceHandleDEV?.type === TextInput;
+        if (!isTextInput) {
+          Keyboard.dismiss();
           resetTimer();
-        }}
-        onClear={() => setSearchQuery('')}
-        placeholder="Search accounts..."
-      />
+        }
+      }}
+    >
+      <View style={{ flex: 1, padding: 20 }}>
+        <Text style={homescreenstyles.title}>Update Account</Text>
 
-      <ScrollView style={{ marginBottom: 20 }}>
-        {filteredPasswords.length > 0 ? (
-          filteredPasswords.map((item) => (
-            <AccountList
-              key={item.password_id}
-              item={item}
-              onPress={() => handleSelectAccount(item)}
+        <SearchBar
+          value={searchQuery}
+          onChange={(text) => {
+            setSearchQuery(text);
+            resetTimer();
+          }}
+          onClear={handleClear}
+          placeholder="Search accounts..."
+        />
+
+        <ScrollView style={{ marginBottom: 20 }}>
+          {filteredPasswords.length > 0 ? (
+            filteredPasswords.map((item) => (
+              <AccountList
+                key={item.password_id}
+                item={item}
+                onPress={() => handleSelectAccount(item)}
+              />
+            ))
+          ) : (
+            <Text>No results found</Text>
+          )}
+        </ScrollView>
+
+        {selectedAccount && (
+          <View style={{ marginTop: 10 }}>
+            <Text style={{ fontWeight: 'bold' }}>
+              Selected: {selectedAccount.account_name}
+            </Text>
+
+            <Text>Update Password</Text>
+            <TextInput
+              value={newPassword}
+              onChangeText={setNewPassword}
+              placeholder="Enter new password"
             />
-          ))
-        ) : (
-          <Text>No results found</Text>
+            <Button title="Update Password" onPress={handleUpdatePassword} />
+
+            <Text style={{ marginTop: 15 }}>Update Username</Text>
+            <TextInput
+              value={newUsername}
+              onChangeText={setNewUsername}
+              placeholder="Enter new username"
+            />
+            <Button title="Update Username" onPress={handleUpdateUsername} />
+
+            <Text style={{ marginTop: 15 }}>Update Account Name</Text>
+            <TextInput
+              value={newName}
+              onChangeText={setNewName}
+              placeholder="Enter new account name"
+            />
+            <Button title="Update Account Name" onPress={handleUpdateName} />
+          </View>
         )}
-      </ScrollView>
-
-      {selectedAccount && (
-        <View style={{ marginTop: 10 }}>
-          <Text style={{ fontWeight: 'bold' }}>
-            Selected: {selectedAccount.account_name}
-          </Text>
-
-          <Text>Update Password</Text>
-          <TextInput
-            value={newPassword}
-            onChangeText={setNewPassword}
-            placeholder="Enter new password"
-            
-          />
-          <Button title="Update Password" onPress={handleUpdatePassword} />
-
-          <Text style={{ marginTop: 15 }}>Update Username</Text>
-          <TextInput
-            value={newUsername}
-            onChangeText={setNewUsername}
-            placeholder="Enter new username"
-           
-          />
-          <Button title="Update Username" onPress={handleUpdateUsername} />
-        </View>
-      )}
-    </View>
-  </TouchableWithoutFeedback>
-);
-
+      </View>
+    </TouchableWithoutFeedback>
+  );
 }

@@ -217,7 +217,7 @@ export async function retrievePassword(userId: number) {
 }
 
 
-export async function updatePassword(  userid: number,password: string) {
+export async function updatePassword(  userid: number,passwordid: number,password: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   const { encrypted, iv } = await encrypt(password);
@@ -227,9 +227,10 @@ export async function updatePassword(  userid: number,password: string) {
 
   try {
     const results = db.getAllSync(
-  `UPDATE PASSWORD SET encrypted_pass = ${encrypted},iv = ${iv} WHERE user_id = '${userid}' `
+  `UPDATE PASSWORD 
+   SET encrypted_pass = '${encrypted}', iv = '${iv}' 
+   WHERE user_id = ${userid} AND password_id = ${passwordid}`
 );
-
   console.log(`Password updated successfully for user_id: ${userid}`);
     return { success: true, message: 'Password updated successfully.' };
     
@@ -243,7 +244,7 @@ export async function updatePassword(  userid: number,password: string) {
 
 
 
-export async function updateUsername(userid: number, username: string) {
+export async function updateUsername(userid: number,passwordid: number, username: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   //sanitizes input
@@ -253,7 +254,7 @@ export async function updateUsername(userid: number, username: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET account_username = '${safeUsername}' WHERE user_id = '${userid}'`
+      `UPDATE PASSWORD SET account_username = '${safeUsername}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);
