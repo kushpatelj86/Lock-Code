@@ -123,7 +123,7 @@ export default function VaultScreen() {
                   );
 
                   const newPassword = generateRandomPassword();
-                  updatePassword(item.user_id,newPassword);
+                  updatePassword(item.user_id,item.password_id,newPassword);
                 }
               }
 

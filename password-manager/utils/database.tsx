@@ -270,7 +270,7 @@ export async function updateUsername(userid: number,passwordid: number, username
 
 
 
-export async function updateName(userid: number, name: string) {
+export async function updateName(userid: number,passwordid:number, name: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   //sanitizes input
@@ -280,7 +280,7 @@ export async function updateName(userid: number, name: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET account_name = '${safeName}' WHERE user_id = '${userid}'`
+      `UPDATE PASSWORD SET account_name = '${safeName}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);
@@ -295,7 +295,7 @@ export async function updateName(userid: number, name: string) {
 
 
 
-export async function updateURL(userid: number, url: string) {
+export async function updateURL(userid: number,passwordid:number, url: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   //sanitizes input
@@ -305,7 +305,7 @@ export async function updateURL(userid: number, url: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET url = '${safeURL}' WHERE user_id = '${userid}'`
+      `UPDATE PASSWORD SET url = '${safeURL}' user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);
@@ -320,7 +320,7 @@ export async function updateURL(userid: number, url: string) {
 
 
 
-export async function updateAddDate(userid: number, add_date: string) {
+export async function updateAddDate(userid: number, passwordid:number,add_date: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   //sanitizes input
@@ -330,7 +330,7 @@ export async function updateAddDate(userid: number, add_date: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET add_date = '${safeAddURL}' WHERE user_id = '${userid}'`
+      `UPDATE PASSWORD SET add_date = '${safeAddURL}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);
@@ -345,7 +345,7 @@ export async function updateAddDate(userid: number, add_date: string) {
 
 
 
-export async function updateExpiryDate(userid: number, expiry_date: string) {
+export async function updateExpiryDate(userid: number,passwordid:number, expiry_date: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   //sanitizes input
@@ -355,7 +355,7 @@ export async function updateExpiryDate(userid: number, expiry_date: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET expiry_date = '${safeExpiryDate}' WHERE user_id = '${userid}'`
+      `UPDATE PASSWORD SET expiry_date = '${safeExpiryDate}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);
@@ -372,7 +372,7 @@ export async function updateExpiryDate(userid: number, expiry_date: string) {
 
 
 
-export async function updateNotes(userid: number, notes: string) {
+export async function updateNotes(userid: number,passwordid:number, notes: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
 
   //sanitizes input
@@ -382,7 +382,7 @@ export async function updateNotes(userid: number, notes: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET expiry_date = '${safeNotes}' WHERE user_id = '${userid}'`
+      `UPDATE PASSWORD SET expiry_date = '${safeNotes}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);

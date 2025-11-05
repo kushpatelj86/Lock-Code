@@ -30,24 +30,21 @@ export default function AccountList({ item, onPress }: AccountListProps) {
       <Text style={styles.title}>User Id: {item.user_id}</Text>
       <Text style={styles.title}>Account Name: {item.account_name}</Text>
       <Text>Username: {item.account_username}</Text>
-
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
-        <Text style={{ fontWeight: 'bold' }}>Password: </Text>
-        <Text selectable={false} style={{ color: '#333', marginRight: 10 }}>
-          {item.decrypted_pass ? maskedIndicator : 'Unavailable'}
-        </Text>
-      </View>
-
+      <Text>Password: </Text>
+      <Text selectable={false} >
+        {item.decrypted_pass ? maskedIndicator : 'Unavailable'}
+      </Text>
       {item.crackTime && (
         <Text style={{ color: 'green', marginTop: 2 }}>
           Estimated crack time: {item.crackTime}
         </Text>
       )}
+      <Text>Name: {item.account_name}</Text>
+      <Text>URL: {item.url}</Text>
+      <Text>Add Date: {item.add_date}</Text>
+      <Text>Expiry Date: {item.expiry_date}</Text>
+      <Text>Notes: {item.notes}</Text>
 
-      {item.url && <Text>URL: {item.url}</Text>}
-      {item.add_date && <Text>Added: {item.add_date}</Text>}
-      {item.expiry_date && <Text>Expires: {item.expiry_date}</Text>}
-      {item.notes && <Text>Notes: {item.notes}</Text>}
     </TouchableOpacity>
   );
 }
