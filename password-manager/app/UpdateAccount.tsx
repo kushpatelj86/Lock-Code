@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Alert, ScrollView, TouchableWithoutFeedback, Keyboard, TextInput, Button } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { retrievePassword, updateUsername, updatePassword, updateName } from '../utils/database';
+import { retrievePassword, updateUsername, updatePassword, updateName, updateAddDate,updateExpiryDate ,updateNotes, updateURL} from '../utils/database';
 import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
@@ -42,6 +42,10 @@ export default function UpdateAccount() {
   const [newPassword, setNewPassword] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [newName, setNewName] = useState('');
+  const [newURL, setNewURL] = useState('');
+  const [newAddDate, setNewAddDate] = useState('');
+  const [newExpiryDate, setNewExpiryDate] = useState('');
+  const [newNotes, setNewNotes] = useState('');
 
   // Auto logout
   async function handleLogout(auto = false) {
@@ -216,7 +220,7 @@ export default function UpdateAccount() {
     const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
 
     try {
-      const result = await updateName(storedUserId, newName);
+      const result = await updateName(storedUserId,selectedAccount.password_id, newName);
       if (result.success) {
         setPasswords(prev =>
           prev.map(p =>
@@ -242,6 +246,87 @@ export default function UpdateAccount() {
       Alert.alert('Error', 'Something went wrong. Try again.');
     }
   }
+
+
+
+  async function handleUpdateURL() {
+    if (!newURL || !selectedAccount) {
+      Alert.alert('Error', 'Please select an account and enter a new name.');
+      return;
+    }
+
+    const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
+
+    try {
+      const result = await updateURL(storedUserId,selectedAccount.password_id, newURL);
+      if (result.success) {
+        setPasswords(prev =>
+          prev.map(p =>
+        {    
+          if (p.password_id === selectedAccount.password_id) 
+          {
+            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+          }
+          else
+          {
+            return p;
+          }
+          })
+        );
+        Alert.alert('Success', 'Password updated!');
+        setNewPassword('');
+      } 
+      else {
+        Alert.alert('Error', result.message || 'Update failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
+    }
+  }
+
+
+
+   async function handleUpdateNotes() {
+    if (!newAddDate || !selectedAccount) {
+      Alert.alert('Error', 'Please select an account and enter a new name.');
+      return;
+    }
+
+    const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
+
+    try {
+      const result = await updateNotes(storedUserId,selectedAccount.password_id, newNotes);
+      if (result.success) {
+        setPasswords(prev =>
+          prev.map(p =>
+        {    
+          if (p.password_id === selectedAccount.password_id) 
+          {
+            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+          }
+          else
+          {
+            return p;
+          }
+          })
+        );
+        Alert.alert('Success', 'Password updated!');
+        setNewPassword('');
+      } 
+      else {
+        Alert.alert('Error', result.message || 'Update failed.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Something went wrong. Try again.');
+    }
+  }
+
+
+
+
+
 
   // Search filter
   useEffect(() => {
@@ -333,7 +418,27 @@ export default function UpdateAccount() {
               placeholder="Enter new account name"
             />
             <Button title="Update Account Name" onPress={handleUpdateName} />
+
+
+             <Text style={{ marginTop: 15 }}>Update URL</Text>
+            <TextInput
+              value={newURL}
+              onChangeText={setNewURL}
+              placeholder="Enter new URL"
+            />
+            <Button title="Update URL" onPress={handleUpdateURL} />
+       
+          <Text style={{ marginTop: 15 }}>Update Notes</Text>
+            <TextInput
+              value={newNotes}
+              onChangeText={setNewNotes}
+              placeholder="Enter new notes"
+            />
+            <Button title="Update Notes" onPress={handleUpdateNotes} />
+       
+       
           </View>
+
         )}
       </View>
     </TouchableWithoutFeedback>
