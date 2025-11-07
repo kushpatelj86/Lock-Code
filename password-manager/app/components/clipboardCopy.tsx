@@ -11,11 +11,11 @@ export async function copyToClipboard(text?: string) {
     await Clipboard.setStringAsync(text);
     Alert.alert('Copied!', 'Password copied to clipboard.');
 
-    // Clear clipboard after 30 seconds
     setTimeout(async () => {
       try {
         await Clipboard.setStringAsync('');
-      } catch (err) {
+      } 
+      catch (err) {
         console.warn('Failed to clear clipboard.');
       }
     }, 30000);

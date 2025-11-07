@@ -10,7 +10,7 @@ import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
-import { updatePassword } from '../utils/database';
+import { updatePassword,updateAddDate,updateExpiryDate } from '../utils/database';
 import {generateRandomPassword} from './components/PasswordGenerator';
 
 // VaultScreen navigation type
@@ -88,6 +88,10 @@ export default function VaultScreen() {
     getPasswords();
   }, []);
 
+
+
+  
+
   async function getPasswords() {
     try {
       const storedUserId = await AsyncStorage.getItem('loggedInUserId');
@@ -123,7 +127,14 @@ export default function VaultScreen() {
                   );
 
                   const newPassword = generateRandomPassword();
-                  updatePassword(item.user_id,item.password_id,newPassword);
+                  const newAddDate = new Date().toISOString().split('T')[0];
+                  const expiryPeriodDays = 90;
+                  const newExpiryDate = new Date(Date.now() + expiryPeriodDays * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+                  await updatePassword(item.user_id,item.password_id,newPassword);
+                  await updateAddDate(item.user_id,item.password_id,newAddDate);
+                  await updateExpiryDate(item.user_id,item.password_id,newExpiryDate);
+
                 }
               }
 
@@ -135,13 +146,8 @@ export default function VaultScreen() {
               console.error('Failed to decrypt password for', item.account_name, error);
               decryptedData.push({ ...item, decrypted_pass: 'Error decrypting', crackTime: '' });
             }
-            
-            
-
 
           }
-
-
         setPasswords(decryptedData);
         setFilteredPasswords(decryptedData);
       } 

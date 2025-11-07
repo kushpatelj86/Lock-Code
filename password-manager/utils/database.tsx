@@ -305,7 +305,7 @@ export async function updateURL(userid: number,passwordid:number, url: string) {
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET url = '${safeURL}' user_id = ${userid} AND password_id= ${passwordid}`
+      `UPDATE PASSWORD SET url = '${safeURL}'WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);

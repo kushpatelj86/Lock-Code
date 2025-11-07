@@ -38,7 +38,15 @@ export function generateRandomPassword(length = 16) {
     password += getRandomChar(allChars);
   }
 
-  password = password.split("").sort(() => Math.random() - 0.5).join("");
+  let pass_arr = password.split("");
+  for (let i = pass_arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    let temp = pass_arr[i];
+    pass_arr[i] = pass_arr[j];
+    pass_arr[j] = temp;
+  }
+  let pass = pass_arr.join("")
 
-  return password;
+
+  return pass;
 }
