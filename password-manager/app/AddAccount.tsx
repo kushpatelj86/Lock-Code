@@ -29,12 +29,13 @@ const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
     try {
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
-      Alert.alert(
-        auto ? 'Session expired' : 'Logged out',
-        auto
-          ? 'You were logged out due to inactivity.'
-          : 'You have been logged out successfully.'
-      );
+      if (auto) {
+        Alert.alert('Session expired','You were logged out due to inactivity.');
+      } 
+      else {
+        Alert.alert('Logged out','You have been logged out successfully.' );
+      }
+
       router.replace('/LoginScreen');
     } catch (error) {
       console.error('Logout error:', error);
@@ -78,7 +79,7 @@ const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
   // Functional Requirement: Add / Edit / Delete Accounts
   // The system shall allow users to store credentials securely in the database.
   async function handleAddAccount() {
-    if (!description || !username || !password || !add_date || !expiry_date) 
+    if (!description || !username || !password) 
     {
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
@@ -94,7 +95,12 @@ const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
     // Functional Requirement: Encryption
     // The system shall store passwords in encrypted form.
     const encrypted_password = password; // Placeholder for encryption
+    const newAddDate = new Date().toISOString().split('T')[0];
+    const expiryPeriodDays = 90;
+    const newExpiryDate = new Date(Date.now() + expiryPeriodDays * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
+    setAddDate(newAddDate);
+    setExpiryDate(newExpiryDate);
     try {
       const inserted = await insertPassword(
         Number(storedUserId),
@@ -167,13 +173,6 @@ const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
             Estimated crack time: {crackTime}
           </Text>
         )}
-
-        <Text style={AddAccountStyles.label}>Add Date *</Text>
-        <TextInput value={add_date} onChangeText={setAddDate} style={AddAccountStyles.input} />
-
-        <Text style={AddAccountStyles.label}>Expiry Date *</Text>
-        <TextInput value={expiry_date} onChangeText={setExpiryDate} style={AddAccountStyles.input} />
-
         <Text style={AddAccountStyles.label}>Notes (optional)</Text>
         <TextInput value={notes} onChangeText={setNotes} style={AddAccountStyles.input} />
 

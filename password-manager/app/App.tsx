@@ -8,6 +8,7 @@ import AddAccount from './AddAccount';
 import VaultScreen from './VaultScreen';
 import { initDatabase } from '../utils/database';
 import UpdateAccount from './UpdateAccount';
+import DeleteAccount from './DeleteAccount';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
@@ -16,7 +17,7 @@ export type RootStackParamList = {
   AddAccount: undefined;
   VaultScreen: undefined;
   UpdateAccount: undefined;
-
+DeleteAccount: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -61,7 +62,14 @@ export default function App() {
         <Stack.Screen
           name="VaultScreen"
           component={VaultScreen}
-          options={{ headerShown: true, title: 'Vault' }}
+          options={{ headerShown: true, title: 'Vault Screen' }}
+        />
+
+
+        <Stack.Screen
+          name="DeleteAccount"
+          component={DeleteAccount}
+          options={{ headerShown: true, title: 'DeleteAccount' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
