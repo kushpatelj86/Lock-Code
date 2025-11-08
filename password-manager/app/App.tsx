@@ -17,7 +17,7 @@ export type RootStackParamList = {
   AddAccount: undefined;
   VaultScreen: undefined;
   UpdateAccount: undefined;
-DeleteAccount: undefined
+  DeleteAccount: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

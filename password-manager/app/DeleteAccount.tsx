@@ -50,8 +50,12 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
 
-      Alert.alert(auto ? 'Session expired' : 'Logged out', auto ? 'You were logged out due to inactivity.' : 'You have been logged out successfully.');
-
+      if (auto) {
+        Alert.alert('Session expired','You were logged out due to inactivity.');
+      } 
+      else {
+        Alert.alert('Logged out','You have been logged out successfully.' );
+      }
       navigation.replace('LoginScreen');
     } catch (error) {
       console.error('Logout error:', error);
@@ -60,7 +64,9 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
   }
 
   function resetTimer() {
-    if (timerRef.current) clearTimeout(timerRef.current);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     timerRef.current = setTimeout(() => handleLogout(true), AUTO_LOGOUT_MS);
   }
 
@@ -68,7 +74,9 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
    useEffect(() => {
       resetTimer();
       return () => {
-        if (timerRef.current) clearTimeout(timerRef.current);
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
       };
     }, []);
   
@@ -143,14 +151,21 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
       } 
       else {
         const query = searchQuery.toLowerCase();
-        setFilteredPasswords(
-          passwords.filter(
-            p =>
-              p.account_name?.toLowerCase().includes(query) ||
-              p.account_username?.toLowerCase().includes(query) ||
-              p.decrypted_pass?.toLowerCase().includes(query)
-          )
-        );
+        const filtered = []
+        for(let i = 0; i < passwords.length;i++)
+        {
+          const p = passwords[i];
+          const accountName = p.account_name?.toLowerCase() || '';
+          const username = p.account_username?.toLowerCase() || '';
+          const password = p.decrypted_pass?.toLowerCase() || '';
+          if (accountName.includes(query) ||username.includes(query) ||password.includes(query))
+          {
+            filtered.push(p);
+
+          }
+        }
+        setFilteredPasswords(filtered);
+
       }
     }, [searchQuery, passwords]);
 
@@ -163,29 +178,26 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
     async function handleDeletePassword() {
 
       if (!selectedAccount) {
-            Alert.alert('Error', 'Please select an account and enter a new username.');
-            return;
-          }
+        Alert.alert('Error', 'Please select an account and enter a new username.');
+        return;
+      }
 
       const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
       try {
             const result = await deletePassword(storedUserId, selectedAccount.password_id);
             if (result.success) {
-              setPasswords(prev =>
-                prev.map(p =>
-              {    
-                if (p.password_id === selectedAccount.password_id) 
+                const updatedPasswords = [...passwords]; 
+                for (let i = 0; i < updatedPasswords.length; i++) 
                 {
-                  return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+                  if (updatedPasswords[i].password_id === selectedAccount.password_id) {
+                    updatedPasswords[i] = {...updatedPasswords[i],encrypted_pass: newPassword,decrypted_pass: newPassword };
+                    break; 
+                  }
                 }
-                else
-                {
-                  return p;
-                }
-                })
-              );
-              Alert.alert('Success', 'Password updated!');
-              setNewPassword('');
+        
+                setPasswords(updatedPasswords);
+                Alert.alert('Success', 'Password updated!');
+                setNewPassword('');
             } 
             else {
               Alert.alert('Error', result.message || 'Update failed.');
@@ -225,18 +237,27 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
             />
     
             <ScrollView style={{ marginBottom: 20 }}>
-              {filteredPasswords.length > 0 ? (
-                filteredPasswords.map((item) => (
-                  <AccountList
-                    key={item.password_id}
-                    item={item}
-                    onPress={() => handleSelectAccount(item)}
-                  />
-                ))
-              ) : (
-                <Text>No results found</Text>
-              )}
-            </ScrollView>
+            {(() => {
+              const accountItems = [];
+              if (filteredPasswords.length > 0) {
+                for (let i = 0; i < filteredPasswords.length; i++) {
+                  const item = filteredPasswords[i];
+                  accountItems.push(
+                    <AccountList
+                      key={item.password_id}
+                      item={item}
+                      onPress={() => handleSelectAccount(item)}
+                    />
+                  );
+                }
+                return accountItems;
+              } 
+              else {
+                return <Text>No results found</Text>;
+              }
+            })()}
+          </ScrollView>
+
 
             {selectedAccount && (
                       <View style={{ marginTop: 10 }}>
@@ -246,16 +267,6 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
 
                          <Text>Delete Password</Text>
                         <Button title="Delete Password" onPress={handleDeletePassword} />
-            
-                        
-            
-            
-                        
-            
-                        
-                   
-                   
-                   
                       </View>
             
                     )}

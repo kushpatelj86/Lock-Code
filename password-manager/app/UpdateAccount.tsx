@@ -91,7 +91,9 @@ export default function UpdateAccount() {
       if (result.success && result.data) {
         const decryptedData: Password[] = [];
 
-        for (const item of result.data as Password[]) {
+        const passwords = result.data as Password[]
+
+        for (const item of passwords) {
           try {
             const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
             let crackTime = '';
@@ -150,22 +152,20 @@ export default function UpdateAccount() {
     try {
       const result = await updatePassword(storedUserId, selectedAccount.password_id, newPassword);
       if (result.success) {
-        setPasswords(prev =>
-          prev.map(p =>
-        {    
-          if (p.password_id === selectedAccount.password_id) 
-          {
-            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+        const updatedPasswords = [...passwords]; 
+        for (let i = 0; i < updatedPasswords.length; i++) 
+        {
+          if (updatedPasswords[i].password_id === selectedAccount.password_id) {
+            updatedPasswords[i] = {...updatedPasswords[i],encrypted_pass: newPassword,decrypted_pass: newPassword };
+            break; 
           }
-          else
-          {
-            return p;
-          }
-          })
-        );
+        }
+
+        setPasswords(updatedPasswords);
         Alert.alert('Success', 'Password updated!');
         setNewPassword('');
-      } 
+      }
+
       else {
         Alert.alert('Error', result.message || 'Update failed.');
       }
@@ -185,23 +185,20 @@ export default function UpdateAccount() {
 
     try {
       const result = await updateUsername(storedUserId, selectedAccount.password_id, newUsername);
-      if (result.success) {
-        setPasswords(prev =>
-          prev.map(p =>
-        {    
-          if (p.password_id === selectedAccount.password_id) 
-          {
-            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+       if (result.success) {
+        const updatedPasswords = [...passwords]; 
+        for (let i = 0; i < updatedPasswords.length; i++) 
+        {
+          if (updatedPasswords[i].password_id === selectedAccount.password_id) {
+            updatedPasswords[i] = {...updatedPasswords[i],encrypted_pass: newPassword,decrypted_pass: newPassword };
+            break; 
           }
-          else
-          {
-            return p;
-          }
-          })
-        );
+        }
+
+        setPasswords(updatedPasswords);
         Alert.alert('Success', 'Password updated!');
         setNewPassword('');
-      } 
+      }
       else {
         Alert.alert('Error', result.message || 'Update failed.');
       }
@@ -221,23 +218,20 @@ export default function UpdateAccount() {
 
     try {
       const result = await updateName(storedUserId,selectedAccount.password_id, newName);
-      if (result.success) {
-        setPasswords(prev =>
-          prev.map(p =>
-        {    
-          if (p.password_id === selectedAccount.password_id) 
-          {
-            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+       if (result.success) {
+        const updatedPasswords = [...passwords]; 
+        for (let i = 0; i < updatedPasswords.length; i++) 
+        {
+          if (updatedPasswords[i].password_id === selectedAccount.password_id) {
+            updatedPasswords[i] = {...updatedPasswords[i],encrypted_pass: newPassword,decrypted_pass: newPassword };
+            break; 
           }
-          else
-          {
-            return p;
-          }
-          })
-        );
+        }
+
+        setPasswords(updatedPasswords);
         Alert.alert('Success', 'Password updated!');
         setNewPassword('');
-      } 
+      }
       else {
         Alert.alert('Error', result.message || 'Update failed.');
       }
@@ -259,23 +253,20 @@ export default function UpdateAccount() {
 
     try {
       const result = await updateURL(storedUserId,selectedAccount.password_id, newURL);
-      if (result.success) {
-        setPasswords(prev =>
-          prev.map(p =>
-        {    
-          if (p.password_id === selectedAccount.password_id) 
-          {
-            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+       if (result.success) {
+        const updatedPasswords = [...passwords]; 
+        for (let i = 0; i < updatedPasswords.length; i++) 
+        {
+          if (updatedPasswords[i].password_id === selectedAccount.password_id) {
+            updatedPasswords[i] = {...updatedPasswords[i],encrypted_pass: newPassword,decrypted_pass: newPassword };
+            break; 
           }
-          else
-          {
-            return p;
-          }
-          })
-        );
+        }
+
+        setPasswords(updatedPasswords);
         Alert.alert('Success', 'Password updated!');
         setNewPassword('');
-      } 
+      }
       else {
         Alert.alert('Error', result.message || 'Update failed.');
       }
@@ -288,7 +279,7 @@ export default function UpdateAccount() {
 
 
    async function handleUpdateNotes() {
-    if (!newAddDate || !selectedAccount) {
+    if (!newNotes || !selectedAccount) {
       Alert.alert('Error', 'Please select an account and enter a new name.');
       return;
     }
@@ -297,23 +288,20 @@ export default function UpdateAccount() {
 
     try {
       const result = await updateNotes(storedUserId,selectedAccount.password_id, newNotes);
-      if (result.success) {
-        setPasswords(prev =>
-          prev.map(p =>
-        {    
-          if (p.password_id === selectedAccount.password_id) 
-          {
-            return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+       if (result.success) {
+        const updatedPasswords = [...passwords]; 
+        for (let i = 0; i < updatedPasswords.length; i++) 
+        {
+          if (updatedPasswords[i].password_id === selectedAccount.password_id) {
+            updatedPasswords[i] = {...updatedPasswords[i],encrypted_pass: newPassword,decrypted_pass: newPassword };
+            break; 
           }
-          else
-          {
-            return p;
-          }
-          })
-        );
+        }
+
+        setPasswords(updatedPasswords);
         Alert.alert('Success', 'Password updated!');
         setNewPassword('');
-      } 
+      }
       else {
         Alert.alert('Error', result.message || 'Update failed.');
       }

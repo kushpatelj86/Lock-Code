@@ -15,6 +15,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Signup" component={SignUpScreen} />
       <Stack.Screen name="AddAccount" component={AddAccount} />
       <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
+      <Stack.Screen name="UpdateAccount" component={UpdateAccount} />
 
     </Stack.Navigator>
   );

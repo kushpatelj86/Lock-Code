@@ -18,7 +18,7 @@ export default function AddAccount() {
   const [expiry_date, setExpiryDate] = useState('');
   const [notes, setNotes] = useState('');
   const [crackTime, setCrackTime] = useState('');
-const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
+  const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
 
   const router = useRouter();
   const timerRef = useRef<number | null>(null);

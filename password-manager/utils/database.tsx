@@ -382,7 +382,7 @@ export async function updateNotes(userid: number,passwordid:number, notes: strin
 
   try {
     const results = db.getAllSync(
-      `UPDATE PASSWORD SET expiry_date = '${safeNotes}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
+      `UPDATE PASSWORD SET notes = '${safeNotes}' WHERE user_id = ${userid} AND password_id= ${passwordid}`
     );
 
     console.log(`Username updated successfully for user_id: ${userid}`);

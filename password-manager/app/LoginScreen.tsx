@@ -59,7 +59,7 @@ export default function LoginScreen() {
       // Verify user credentials using database helper
       const result = await verifyMasterUser(username.trim(), password);
       
-      if (result?.success && result.userId) {
+      if (result.success && result.userId) {
         // Save user info in AsyncStorage for session persistence
         await AsyncStorage.setItem('loggedInUser', username.trim());
         await AsyncStorage.setItem('loggedInUserId', String(result.userId));
@@ -68,7 +68,7 @@ export default function LoginScreen() {
         navigation.replace('HomeScreen'); 
       } 
       else {
-        Alert.alert('Error', result?.message || 'Invalid username or password.');
+        Alert.alert('Error', result.message || 'Invalid username or password.');
       }
     } catch (error) {
       console.error('Login error:', error);
