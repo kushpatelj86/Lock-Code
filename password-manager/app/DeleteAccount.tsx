@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Alert, ScrollView, TouchableWithoutFeedback, Keyboard, TextInput, Button } from 'react-native';
 import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { retrievePassword, updateUsername, updatePassword, updateName, updateAddDate,updateExpiryDate ,updateNotes, updateURL} from '../utils/database';
+import { retrievePassword, updatePassword ,deletePassword} from '../utils/database';
 import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
@@ -40,6 +40,7 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAccount, setSelectedAccount] = useState<Password | null>(null);
+  const [newPassword, setNewPassword] = useState('');
 
 
 
@@ -159,6 +160,46 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
     setFilteredPasswords(passwords);
   }
 
+    async function handleDeletePassword() {
+
+      if (!selectedAccount) {
+            Alert.alert('Error', 'Please select an account and enter a new username.');
+            return;
+          }
+
+      const storedUserId = Number(await AsyncStorage.getItem('loggedInUserId'));
+      try {
+            const result = await deletePassword(storedUserId, selectedAccount.password_id);
+            if (result.success) {
+              setPasswords(prev =>
+                prev.map(p =>
+              {    
+                if (p.password_id === selectedAccount.password_id) 
+                {
+                  return { ...p, encrypted_pass: newPassword, decrypted_pass: newPassword };
+                }
+                else
+                {
+                  return p;
+                }
+                })
+              );
+              Alert.alert('Success', 'Password updated!');
+              setNewPassword('');
+            } 
+            else {
+              Alert.alert('Error', result.message || 'Update failed.');
+            }
+          } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Something went wrong. Try again.');
+          }
+
+
+
+
+    }
+
     return (
         <TouchableWithoutFeedback
           onPress={(event) => {
@@ -196,8 +237,28 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
                 <Text>No results found</Text>
               )}
             </ScrollView>
-    
+
+            {selectedAccount && (
+                      <View style={{ marginTop: 10 }}>
+                        <Text style={{ fontWeight: 'bold' }}>
+                          Selected: {selectedAccount.account_name}
+                        </Text>
+
+                         <Text>Delete Password</Text>
+                        <Button title="Delete Password" onPress={handleDeletePassword} />
             
+                        
+            
+            
+                        
+            
+                        
+                   
+                   
+                   
+                      </View>
+            
+                    )}
           </View>
         </TouchableWithoutFeedback>
       );

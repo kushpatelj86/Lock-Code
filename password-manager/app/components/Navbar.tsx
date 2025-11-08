@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { styles } from './styles/NavBarStyling';
+
+
+
 export default function Navbar() {
   const router = useRouter();
 
@@ -22,6 +25,10 @@ export default function Navbar() {
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/UpdateAccount')}>
         <Text style={styles.buttonText}>Update Account</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/DeleteAccount')}>
+        <Text style={styles.buttonText}>Delete Account</Text>
       </TouchableOpacity>
     </View>
   );

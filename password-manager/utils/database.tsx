@@ -394,3 +394,29 @@ export async function updateNotes(userid: number,passwordid:number, notes: strin
     return { success: false, message: 'Failed to update username.' };
   }
 }
+
+
+
+
+
+export async function deletePassword(userid: number,passwordid:number) {
+  const db = SQLite.openDatabaseSync('password_manager.db');
+
+  //sanitizes input
+
+  console.log('Updating username for user_id:', userid);
+
+  try {
+    const results = db.getAllSync(
+      `DELETE FROM PASSWORD WHERE user_id = ${userid} AND password_id= ${passwordid}`
+    );
+
+    console.log(`Username updated successfully for user_id: ${userid}`);
+
+    return { success: true, message: 'Deleted successfully.' };
+
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
+}
