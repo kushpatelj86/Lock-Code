@@ -12,12 +12,14 @@ type HomeScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'HomeScreen'
 >;
+  const AUTO_LOGOUT_MS = 5 * 60 * 1000;
 
 export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const timerRef = useRef<number | null>(null);
 
-  // Auto logout handler
+  // Functional Requirement: Logout and Auto Logout
+  //  User manually clicks Logout, which returns to the Login Screen and System auto logs out after inactivity
   async function handleLogout(auto = false) {
     try {
       await AsyncStorage.removeItem('loggedInUser');
@@ -40,7 +42,7 @@ export default function HomeScreen() {
   useEffect(() => {
     timerRef.current = setTimeout(() => {
       handleLogout(true);
-    }, 6000000); 
+    }, AUTO_LOGOUT_MS); 
 
     return () => {
       if (timerRef.current)

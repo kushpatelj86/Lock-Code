@@ -31,8 +31,7 @@ type Password = {
   crackTime?: string;
 };
 
-// Auto logout timeout in milliseconds
-const AUTO_LOGOUT_MS = 10000; // 10 seconds, adjust as needed
+const AUTO_LOGOUT_MS = 5 * 60 * 1000;
 
 export default function VaultScreen() {
   const navigation = useNavigation<VaultScreenNavigationProp>();

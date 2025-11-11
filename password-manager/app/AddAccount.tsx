@@ -18,8 +18,7 @@ export default function AddAccount() {
   const [expiry_date, setExpiryDate] = useState('');
   const [notes, setNotes] = useState('');
   const [crackTime, setCrackTime] = useState('');
-  const AUTO_LOGOUT_MS = 600000; // 10 seconds, adjust as needed
-
+  const AUTO_LOGOUT_MS = 5 * 60 * 1000;
   const router = useRouter();
   const timerRef = useRef<number | null>(null);
 
@@ -135,7 +134,7 @@ export default function AddAccount() {
   }
 
   return (
-    // Functional Requirement: Add / Edit / Delete Accounts
+    // Functional Requirement: Add Accounts
     // The system shall display an Add Account Screen to input new account credentials.
     <ScrollView contentContainerStyle={AddAccountStyles.container}>
       <View style={AddAccountStyles.form}>
@@ -176,7 +175,7 @@ export default function AddAccount() {
         <Text style={AddAccountStyles.label}>Notes (optional)</Text>
         <TextInput value={notes} onChangeText={setNotes} style={AddAccountStyles.input} />
 
-        {/* Functional Requirement: Add / Edit / Delete Accounts
+        {/* Functional Requirement: Add Accounts
             The system shall save new credentials securely to the vault. */}
         <TouchableOpacity style={AddAccountStyles.button} onPress={handleAddAccount}>
           <Text style={AddAccountStyles.buttonText}>Add Account</Text>

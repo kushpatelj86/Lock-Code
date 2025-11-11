@@ -11,6 +11,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { generateRandomPassword } from './components/PasswordGenerator';
 import AccountList from './components/AccountList';
+import { DeleteAccountStyles } from './styles/DeleteAccountStyles';
 
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
@@ -29,11 +30,11 @@ type Password = {
   crackTime?: string;
 };
 
-const AUTO_LOGOUT_MS = 600000; // 10 minutes
+const AUTO_LOGOUT_MS = 5 * 60 * 1000;
 
 export default function DeleteAccount() {
 
-const navigation = useNavigation<VaultScreenNavigationProp>();
+  const navigation = useNavigation<VaultScreenNavigationProp>();
   const timerRef = useRef<number | null>(null);
 
   const [passwords, setPasswords] = useState<Password[]>([]);
@@ -223,7 +224,7 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
             }
           }}
         >
-          <View style={{ flex: 1, padding: 20 }}>
+          <View style={DeleteAccountStyles.container}>
             <Text style={homescreenstyles.title}>Update Account</Text>
     
             <SearchBar
@@ -236,7 +237,7 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
               placeholder="Search accounts..."
             />
     
-            <ScrollView style={{ marginBottom: 20 }}>
+            <ScrollView style={DeleteAccountStyles.scroll}>
             {(() => {
               const accountItems = [];
               if (filteredPasswords.length > 0) {
@@ -260,8 +261,8 @@ const navigation = useNavigation<VaultScreenNavigationProp>();
 
 
             {selectedAccount && (
-                      <View style={{ marginTop: 10 }}>
-                        <Text style={{ fontWeight: 'bold' }}>
+                      <View style={ DeleteAccountStyles.selected}>
+                        <Text style={ DeleteAccountStyles.selectedtag}>
                           Selected: {selectedAccount.account_name}
                         </Text>
 

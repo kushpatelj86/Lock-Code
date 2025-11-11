@@ -29,7 +29,7 @@ type Password = {
   crackTime?: string;
 };
 
-const AUTO_LOGOUT_MS = 600000; // 10 minutes
+const AUTO_LOGOUT_MS = 5 * 60 * 1000;
 
 export default function UpdateAccount() {
   const navigation = useNavigation<VaultScreenNavigationProp>();
@@ -43,8 +43,6 @@ export default function UpdateAccount() {
   const [newUsername, setNewUsername] = useState('');
   const [newName, setNewName] = useState('');
   const [newURL, setNewURL] = useState('');
-  const [newAddDate, setNewAddDate] = useState('');
-  const [newExpiryDate, setNewExpiryDate] = useState('');
   const [newNotes, setNewNotes] = useState('');
 
   // Auto logout
@@ -53,7 +51,14 @@ export default function UpdateAccount() {
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
 
-      Alert.alert(auto ? 'Session expired' : 'Logged out', auto ? 'You were logged out due to inactivity.' : 'You have been logged out successfully.');
+      if (auto) 
+      {
+        Alert.alert('Session expired','You were logged out due to inactivity.');
+      }
+      else
+      {
+        Alert.alert('Logged out', 'You have been logged out successfully.');
+      }
 
       navigation.replace('LoginScreen');
     } catch (error) {
@@ -63,14 +68,18 @@ export default function UpdateAccount() {
   }
 
   function resetTimer() {
-    if (timerRef.current) clearTimeout(timerRef.current);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     timerRef.current = setTimeout(() => handleLogout(true), AUTO_LOGOUT_MS);
   }
 
   useEffect(() => {
     resetTimer();
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, []);
 
@@ -322,16 +331,22 @@ export default function UpdateAccount() {
       setFilteredPasswords(passwords);
     } 
     else {
-      const query = searchQuery.toLowerCase();
-      setFilteredPasswords(
-        passwords.filter(
-          p =>
-            p.account_name?.toLowerCase().includes(query) ||
-            p.account_username?.toLowerCase().includes(query) ||
-            p.decrypted_pass?.toLowerCase().includes(query)
-        )
-      );
+  const query = searchQuery.toLowerCase();
+  const results = [];
+
+  for (let i = 0; i < passwords.length; i++) {
+    const p = passwords[i];
+    const name = p.account_name?.toLowerCase() || "";
+    const username = p.account_username?.toLowerCase() || "";
+    const password = p.decrypted_pass?.toLowerCase() || "";
+
+    if (name.includes(query) || username.includes(query) || password.includes(query)) {
+      results.push(p);
     }
+  }
+
+  setFilteredPasswords(results);
+}
   }, [searchQuery, passwords]);
 
   function handleClear() {
