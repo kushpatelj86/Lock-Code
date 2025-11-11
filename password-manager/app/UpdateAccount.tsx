@@ -331,21 +331,21 @@ export default function UpdateAccount() {
       setFilteredPasswords(passwords);
     } 
     else {
-  const query = searchQuery.toLowerCase();
-  const results = [];
+      const query = searchQuery.toLowerCase();
+      const results = [];
 
-  for (let i = 0; i < passwords.length; i++) {
-    const p = passwords[i];
-    const name = p.account_name?.toLowerCase() || "";
-    const username = p.account_username?.toLowerCase() || "";
-    const password = p.decrypted_pass?.toLowerCase() || "";
+      for (let i = 0; i < passwords.length; i++) {
+        const p = passwords[i];
+        const name = p.account_name?.toLowerCase() || "";
+        const username = p.account_username?.toLowerCase() || "";
+        const password = p.decrypted_pass?.toLowerCase() || "";
 
-    if (name.includes(query) || username.includes(query) || password.includes(query)) {
-      results.push(p);
-    }
-  }
+        if (name.includes(query) || username.includes(query) || password.includes(query)) {
+          results.push(p);
+        }
+      }
 
-  setFilteredPasswords(results);
+      setFilteredPasswords(results);
 }
   }, [searchQuery, passwords]);
 
