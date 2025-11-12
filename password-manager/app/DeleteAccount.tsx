@@ -30,6 +30,9 @@ type Password = {
   crackTime?: string;
 };
 
+// Functional Requirement: Automatic Logout
+// Automatically logs out user after 5 minutes of inactivity
+
 const AUTO_LOGOUT_MS = 5 * 60 * 1000;
 
 export default function DeleteAccount() {
@@ -81,7 +84,8 @@ export default function DeleteAccount() {
       };
     }, []);
   
-    // Load passwords
+    // Functional Requirement: Secure Storage & Encryption
+    // Retrieve passwords from the encrypted vault
     useEffect(() => {
       getPasswords();
     }, []);
@@ -102,7 +106,14 @@ export default function DeleteAccount() {
 
         for (const item of result.data as Password[]) {
           try {
+            // Functional Requirement: Decryption
+            // Decrypt AES-256 encrypted passwords for display
             const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
+
+
+            // Functional Requirement: Password Strength Evaluation
+            // Estimate password crack time
+
             let crackTime = '';
 
             if (decrypted_pass) {
@@ -110,6 +121,7 @@ export default function DeleteAccount() {
               crackTime = formatYears(estimated.years);
             }
 
+            // Check password expiry and regenerate if needed
             if (item.expiry_date) {
               const currentDate = new Date();
               const expiryDate = new Date(item.expiry_date);
@@ -141,31 +153,35 @@ export default function DeleteAccount() {
   }
 
 
+  // Functional Requirement: Account Selection
+  // Select an account entry from the vault
+
   async function handleSelectAccount(account: Password) {
     setSelectedAccount(account);
     
   }
-
+  // Functional Requirement: Search / Filter Accounts
+  // Filter results by account name, username, or password
   useEffect(() => {
       if (searchQuery.trim() === '') {
         setFilteredPasswords(passwords);
       } 
       else {
         const query = searchQuery.toLowerCase();
-        const filtered = []
+        const password_list = []
         for(let i = 0; i < passwords.length;i++)
         {
           const p = passwords[i];
           const accountName = p.account_name?.toLowerCase() || '';
           const username = p.account_username?.toLowerCase() || '';
           const password = p.decrypted_pass?.toLowerCase() || '';
-          if (accountName.includes(query) ||username.includes(query) ||password.includes(query))
+          if (accountName.includes(query) || username.includes(query) || password.includes(query))
           {
-            filtered.push(p);
+            password_list.push(p);
 
           }
         }
-        setFilteredPasswords(filtered);
+        setFilteredPasswords(password_list);
 
       }
     }, [searchQuery, passwords]);
@@ -175,6 +191,9 @@ export default function DeleteAccount() {
     setSearchQuery('');
     setFilteredPasswords(passwords);
   }
+
+   // Functional Requirement: Delete Account
+   // Allows user to delete a selected account from the vault
 
     async function handleDeletePassword() {
 
