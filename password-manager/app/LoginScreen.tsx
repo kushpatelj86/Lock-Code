@@ -4,32 +4,30 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from './App';
-import { loginStyles } from './styles/LoginStyles'; 
+import { loginStyles } from './styles/LoginScreenStyles'; 
 import { verifyMasterUser } from '../utils/database'; 
 
-// Define the type for navigation prop for this screen
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'LoginScreen'
 >;
 
 export default function LoginScreen() {
-  // State variables for username, password, loading indicator, and login check
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true); // To check if user is already logged in
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
-  // useEffect to check login status when the screen mounts
-  useEffect(() => {
-    async function checkLoginStatus() {
+
+
+  // Functional Requirement: When the user opens the application, the system shall display the Login Screen.
+  // Checks if a user is already logged in (via AsyncStorage). If yes, navigates directly to the Home Screen.
+  async function checkLoginStatus() {
       try {
-        // Get saved user info from AsyncStorage
         const storedUser = await AsyncStorage.getItem('loggedInUser');
         const storedUserId = await AsyncStorage.getItem('loggedInUserId');
 
-        // If user info exists, navigate to HomeScreen automatically
         if (storedUser && storedUserId) {
           navigation.replace('HomeScreen');
           return;
@@ -37,68 +35,73 @@ export default function LoginScreen() {
       } catch (error) {
         console.error('Error checking login status:', error);
       } finally {
-        // Finished checking login
+
         setCheckingLogin(false);
       }
     }
 
+  useEffect(() => {
+
     checkLoginStatus();
   }, []);
 
-  // Function to handle user login
+  // Functional Requirement: Master Password Login
+  // Verifies the entered username and master password with the database. If valid, stores credentials in AsyncStorage and navigates to HomeScreen.
   async function handleLogin() {
-    // Validate inputs
     if (!username.trim() || !password.trim()) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
 
-    setLoading(true); // Show loading indicator
+    setLoading(true); 
 
     try {
-      // Verify user credentials using database helper
       const result = await verifyMasterUser(username.trim(), password);
       
       if (result.success && result.userId) {
-        // Save user info in AsyncStorage for session persistence
         await AsyncStorage.setItem('loggedInUser', username.trim());
         await AsyncStorage.setItem('loggedInUserId', String(result.userId));
 
-        // Navigate to HomeScreen after successful login
         navigation.replace('HomeScreen'); 
       } 
       else {
-        Alert.alert('Error', result.message || 'Invalid username or password.');
+        if (result.message) {
+          Alert.alert('Error', result.message);
+        } 
+        else {
+          Alert.alert('Error', 'Invalid username or password.');
+        }
+
       }
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', 'Something went wrong. Try again.');
     } finally {
-      setLoading(false); // Hide loading indicator
+      setLoading(false);
     }
   }
-
-  // Function to navigate to the SignUp screen
+  // Functional Requirement: If the user doesn't have an account, the system shall prompt them to create one.
+  // Navigates to the Sign Up screen where new users can register.
   function navigateToSignUp() {
     navigation.navigate('SignUpScreen');
   }
 
-  // Show loading screen while checking if user is already logged in
   if (checkingLogin) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={loginStyles.logincheck}>
         <ActivityIndicator size="large" color="#000" />
       </View>
     );
   }
+  // Functional Requirement:Master Password Login, Prompt to create account (Sign Up)
+  // Contains username/password inputs, login button, and sign-up navigation.
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 20 }}>
-      <Text style={{ textAlign: 'center', fontSize: 28, marginVertical: 30 }}>Login</Text>
+    <View style={loginStyles.container}>
+      <Text style={loginStyles.loginlabel}>Login</Text>
 
       <View style={loginStyles.container}>
         <View style={loginStyles.form}>
-          {/* Username input */}
           <Text style={loginStyles.label}>Username</Text>
           <TextInput
             value={username}
@@ -108,7 +111,6 @@ export default function LoginScreen() {
             autoCorrect={false}
           />
 
-          {/* Password input */}
           <Text style={loginStyles.label}>Master Password</Text>
           <TextInput
             value={password}
@@ -118,7 +120,6 @@ export default function LoginScreen() {
             autoCapitalize="none"
           />
 
-          {/* Login button */}
           <TouchableOpacity
             onPress={handleLogin}
             style={loginStyles.button}
@@ -131,7 +132,6 @@ export default function LoginScreen() {
             )}
           </TouchableOpacity>
 
-          {/* Sign Up button */}
           <TouchableOpacity onPress={navigateToSignUp} style={loginStyles.button}>
             <Text style={loginStyles.buttonText}>
               Don't have an account? Sign Up

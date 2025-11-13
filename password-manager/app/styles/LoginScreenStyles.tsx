@@ -52,4 +52,15 @@ export const loginStyles = StyleSheet.create({
     marginVertical: 20,
     alignSelf: 'center',
   },
+  logincheck: {
+     flex: 1, 
+     justifyContent: 'center', 
+     alignItems: 'center', 
+  },
+
+  loginlabel: {
+     textAlign: 'center', 
+     fontSize: 28, 
+     marginVertical: 30,
+  },
 });

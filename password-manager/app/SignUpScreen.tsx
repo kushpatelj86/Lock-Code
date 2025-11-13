@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginStyles } from './styles/LoginStyles'; 
+import { loginStyles } from './styles/LoginScreenStyles'; 
 import { insertMasterUser } from '../utils/database'; 
 
 // RootStackParamList defines the app's navigation routes
