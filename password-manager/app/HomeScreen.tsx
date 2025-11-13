@@ -53,7 +53,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={homescreenstyles.container}>
       <Text style={homescreenstyles.title}>Welcome to Lock Code</Text>
 
       <Text style={homescreenstyles.subtitle}>
@@ -61,16 +61,10 @@ export default function HomeScreen() {
       </Text>
 
       <TouchableOpacity
-        style={{
-          marginTop: 20,
-          backgroundColor: '#ff4d4d',
-          padding: 10,
-          borderRadius: 5,
-          alignItems: 'center',
-        }}
+        style={homescreenstyles.loginbutton}
         onPress={() => handleLogout(false)}
       >
-        <Text style={{ color: 'white', fontWeight: 'bold' }}>Logout</Text>
+        <Text style={homescreenstyles.logoutbutton}>Logout</Text>
       </TouchableOpacity>
 
       <Navbar />

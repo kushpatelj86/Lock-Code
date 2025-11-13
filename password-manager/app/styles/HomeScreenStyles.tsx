@@ -52,6 +52,13 @@ export const homescreenstyles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
   },
+  loginbutton: {
+    marginTop: 20,
+    backgroundColor: '#ff4d4d',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
   buttonText: {
     fontFamily: 'Arial',
     fontSize: 16,
@@ -60,5 +67,9 @@ export const homescreenstyles = StyleSheet.create({
   registrationLink: {
     marginVertical: 20,
     alignSelf: 'center',
+  },
+  logoutbutton: {
+    color: 'white', 
+    fontWeight: 'bold',
   },
 });

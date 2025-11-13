@@ -236,7 +236,15 @@ export default function DeleteAccount() {
         <TouchableWithoutFeedback
           onPress={(event) => {
             const target = event.target as any;
-            const isTextInput = target && target._internalFiberInstanceHandleDEV?.type === TextInput;
+            let isTextInput = false;
+
+            if (target && target._internalFiberInstanceHandleDEV?.type === TextInput) {
+              isTextInput = true;
+            }    
+            else
+            {
+              isTextInput = false;
+            }        
             if (!isTextInput) {
               Keyboard.dismiss();
               resetTimer();
