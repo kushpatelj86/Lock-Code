@@ -11,6 +11,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { generateRandomPassword } from './components/PasswordGenerator';
 import AccountList from './components/AccountList';
+import { updateaccountstyles } from './styles/UpdateAccountStyles'; 
 
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
@@ -242,7 +243,13 @@ export default function UpdateAccount() {
         setNewPassword('');
       }
       else {
-        Alert.alert('Error', result.message || 'Update failed.');
+        if (result.message) {
+          Alert.alert('Error', result.message);
+        } 
+        else {
+          Alert.alert('Error', 'Update failed.');
+        }
+
       }
     } catch (error) {
       console.error(error);
@@ -312,7 +319,13 @@ export default function UpdateAccount() {
         setNewPassword('');
       }
       else {
-        Alert.alert('Error', result.message || 'Update failed.');
+        if (result.message) {
+          Alert.alert('Error', result.message);
+        } 
+        else {
+          Alert.alert('Error', 'Update failed.');
+        }
+
       }
     } catch (error) {
       console.error(error);
@@ -336,9 +349,20 @@ export default function UpdateAccount() {
 
       for (let i = 0; i < passwords.length; i++) {
         const p = passwords[i];
-        const name = p.account_name?.toLowerCase() || "";
-        const username = p.account_username?.toLowerCase() || "";
-        const password = p.decrypted_pass?.toLowerCase() || "";
+        let name = "";
+        if (p.account_name) {
+          name = p.account_name.toLowerCase();
+        }
+
+        let username = "";
+        if (p.account_username) {
+          username = p.account_username.toLowerCase();
+        }
+
+        let password = "";
+        if (p.decrypted_pass) {
+          password = p.decrypted_pass.toLowerCase();
+        }
 
         if (name.includes(query) || username.includes(query) || password.includes(query)) {
           results.push(p);
@@ -393,8 +417,8 @@ export default function UpdateAccount() {
         </ScrollView>
 
         {selectedAccount && (
-          <View style={{ marginTop: 10 }}>
-            <Text style={{ fontWeight: 'bold' }}>
+          <View style={updateaccountstyles.container}>
+            <Text style={updateaccountstyles.selectedlabel}>
               Selected: {selectedAccount.account_name}
             </Text>
 
@@ -406,7 +430,7 @@ export default function UpdateAccount() {
             />
             <Button title="Update Password" onPress={handleUpdatePassword} />
 
-            <Text style={{ marginTop: 15 }}>Update Username</Text>
+            <Text style={updateaccountstyles.updatelabel}>Update Username</Text>
             <TextInput
               value={newUsername}
               onChangeText={setNewUsername}
@@ -414,7 +438,7 @@ export default function UpdateAccount() {
             />
             <Button title="Update Username" onPress={handleUpdateUsername} />
 
-            <Text style={{ marginTop: 15 }}>Update Account Name</Text>
+            <Text style={updateaccountstyles.updatelabel}>Update Account Name</Text>
             <TextInput
               value={newName}
               onChangeText={setNewName}
@@ -423,7 +447,7 @@ export default function UpdateAccount() {
             <Button title="Update Account Name" onPress={handleUpdateName} />
 
 
-             <Text style={{ marginTop: 15 }}>Update URL</Text>
+             <Text style={updateaccountstyles.updatelabel}>Update URL</Text>
             <TextInput
               value={newURL}
               onChangeText={setNewURL}
@@ -431,7 +455,7 @@ export default function UpdateAccount() {
             />
             <Button title="Update URL" onPress={handleUpdateURL} />
        
-          <Text style={{ marginTop: 15 }}>Update Notes</Text>
+          <Text style={updateaccountstyles.updatelabel}>Update Notes</Text>
             <TextInput
               value={newNotes}
               onChangeText={setNewNotes}

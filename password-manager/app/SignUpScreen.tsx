@@ -3,8 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginStyles } from './styles/LoginScreenStyles'; 
 import { insertMasterUser } from '../utils/database'; 
+import { signupstyles } from './styles/SignUpScreenStyles'; 
 
 // RootStackParamList defines the app's navigation routes
 export type RootStackParamList = {
@@ -33,7 +33,6 @@ export default function SignUpScreen() {
   async function handleSignUp() {
     // Functional Requirement: Required fields must be filled
     if (!username || !password || !email) {
-      // Postcondition: User alerted to fill required fields
       Alert.alert('Error', 'Please fill in all required fields.');
       return;
     }
@@ -50,7 +49,6 @@ export default function SignUpScreen() {
       );
 
       if (inserted.success === true) {
-        // Postcondition: Store username for session management
         await AsyncStorage.setItem('username', username);
 
         // Functional Requirement: Navigate back to Login after successful sign-up
@@ -62,79 +60,71 @@ export default function SignUpScreen() {
         Alert.alert('Error', 'Username already exists.');
       }
     } catch (error) {
-      // Functional Requirement: Error handling
       console.error(error);
       Alert.alert('Error', 'Something went wrong. Try again.');
     }
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* Screen title */}
-      <Text style={loginStyles.label}>Sign Up</Text>
+    <View style={signupstyles.outercontainer}>
+      <Text style={signupstyles.label}>Sign Up</Text>
 
-      <View style={loginStyles.container}>
-        <View style={loginStyles.form}>
-          {/* Username input */}
-          <Text style={loginStyles.label}>Username</Text>
+      <View style={signupstyles.innercontainer}>
+        <View style={signupstyles.form}>
+          <Text style={signupstyles.label}>Username</Text>
           <TextInput
             value={username}
             onChangeText={setUsername}
-            style={loginStyles.input}
+            style={signupstyles.input}
           />
 
-          {/* Password input */}
-          {/* Functional Requirement: Master Password login */}
-          <Text style={loginStyles.label}>Master Password</Text>
+          
+          <Text style={signupstyles.label}>Master Password</Text>
           <TextInput
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            style={loginStyles.input}
+            style={signupstyles.input}
           />
 
-          {/* Optional user info fields */}
-          <Text style={loginStyles.label}>First Name</Text>
+          <Text style={signupstyles.label}>First Name</Text>
           <TextInput
             value={firstName}
             onChangeText={setFirstName}
-            style={loginStyles.input}
+            style={signupstyles.input}
           />
 
-          <Text style={loginStyles.label}>Last Name</Text>
+          <Text style={signupstyles.label}>Last Name</Text>
           <TextInput
             value={lastName}
             onChangeText={setLastName}
-            style={loginStyles.input}
+            style={signupstyles.input}
           />
 
-          <Text style={loginStyles.label}>Email</Text>
+          <Text style={signupstyles.label}>Email</Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
-            style={loginStyles.input}
+            style={signupstyles.input}
           />
 
-          <Text style={loginStyles.label}>Phone Number</Text>
+          <Text style={signupstyles.label}>Phone Number</Text>
           <TextInput
             value={phoneNumber}
             onChangeText={setPhoneNumber}
-            style={loginStyles.input}
+            style={signupstyles.input}
           />
 
-          {/* Sign Up button */}
-          {/* Functional Requirement: Create Account, Secure Storage */}
-          <TouchableOpacity onPress={handleSignUp} style={loginStyles.button}>
-            <Text style={loginStyles.buttonText}>Sign Up</Text>
+          <TouchableOpacity onPress={handleSignUp} style={signupstyles.button}>
+            <Text style={signupstyles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          {/* Navigate to Login */}
-          {/* Functional Requirement: Already have an account? Return to Login */}
+          
           <TouchableOpacity
             onPress={() => navigation.navigate('LoginScreen')}
-            style={loginStyles.button}
+            style={signupstyles.button}
           >
-            <Text style={loginStyles.buttonText}>
+            <Text style={signupstyles.buttonText}>
               Already have an account? Log In
             </Text>
           </TouchableOpacity>
