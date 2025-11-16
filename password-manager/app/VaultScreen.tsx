@@ -12,6 +12,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { updatePassword,updateAddDate,updateExpiryDate } from '../utils/database';
 import {generateRandomPassword} from './components/PasswordGenerator';
+import VaultAccountList from './components/VaultAccountList';
 
 // VaultScreen navigation type
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
@@ -215,13 +216,7 @@ export default function VaultScreen() {
           placeholder="Search accounts..."
         />
 
-        <ScrollView>
-          {filteredPasswords.length > 0 ? (
-            filteredPasswords.map((item) => <AccountCard key={item.password_id} item={item} />)
-          ) : (
-            <Text>No results found</Text>
-          )}
-        </ScrollView>
+       <VaultAccountList filteredPasswords={filteredPasswords} ></VaultAccountList>
       </View>
     </TouchableWithoutFeedback>
   );

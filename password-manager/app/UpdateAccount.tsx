@@ -12,6 +12,7 @@ import { RootStackParamList } from './App';
 import { generateRandomPassword } from './components/PasswordGenerator';
 import AccountList from './components/AccountList';
 import { updateaccountstyles } from './styles/UpdateAccountStyles'; 
+import ScrollAccountList from './components/ScrollAccountList';
 
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
@@ -402,20 +403,10 @@ export default function UpdateAccount() {
           placeholder="Search accounts..."
         />
 
-        <ScrollView style={{ marginBottom: 20 }}>
-          {filteredPasswords.length > 0 ? (
-            filteredPasswords.map((item) => (
-              <AccountList
-                key={item.password_id}
-                item={item}
-                onPress={() => handleSelectAccount(item)}
-              />
-            ))
-          ) : (
-            <Text>No results found</Text>
-          )}
-        </ScrollView>
-
+        <ScrollAccountList
+        filteredPasswords={filteredPasswords}
+        handleSelectAccount={handleSelectAccount}
+      />
         {selectedAccount && (
           <View style={updateaccountstyles.container}>
             <Text style={updateaccountstyles.selectedlabel}>
