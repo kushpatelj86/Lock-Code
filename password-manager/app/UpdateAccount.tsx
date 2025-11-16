@@ -136,7 +136,13 @@ export default function UpdateAccount() {
         setFilteredPasswords(decryptedData);
       } 
       else {
-        Alert.alert('Info', result.message || 'No passwords found.');
+        if (result.message) {
+          Alert.alert('Info', result.message);
+        } 
+        else {
+          Alert.alert('Info', 'No passwords found.');
+        }
+
       }
     } catch (err) {
       console.error(err);

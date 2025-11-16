@@ -12,7 +12,7 @@ import { RootStackParamList } from './App';
 import { generateRandomPassword } from './components/PasswordGenerator';
 import AccountList from './components/AccountList';
 import { DeleteAccountStyles } from './styles/DeleteAccountStyles';
-
+import DeleteAccountForm from './components/DeleteAccountForm';
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
 type Password = {
@@ -286,18 +286,8 @@ export default function DeleteAccount() {
             })()}
           </ScrollView>
 
-
-            {selectedAccount && (
-                      <View style={ DeleteAccountStyles.selected}>
-                        <Text style={ DeleteAccountStyles.selectedtag}>
-                          Selected: {selectedAccount.account_name}
-                        </Text>
-
-                         <Text>Delete Password</Text>
-                        <Button title="Delete Password" onPress={handleDeletePassword} />
-                      </View>
+            <DeleteAccountForm selectedAccount={selectedAccount} handleDeletePassword={handleDeletePassword}/> 
             
-                    )}
           </View>
         </TouchableWithoutFeedback>
       );
