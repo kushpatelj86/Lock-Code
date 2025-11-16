@@ -10,9 +10,9 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from './App';
 import { generateRandomPassword } from './components/PasswordGenerator';
-import AccountList from './components/AccountList';
 import { updateaccountstyles } from './styles/UpdateAccountStyles'; 
 import ScrollAccountList from './components/ScrollAccountList';
+import UpdateAccountForm from './components/UpdateAccountForm';
 
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
@@ -178,7 +178,12 @@ export default function UpdateAccount() {
       }
 
       else {
-        Alert.alert('Error', result.message || 'Update failed.');
+        if (result.message) {
+          Alert.alert('Error', result.message);
+        } 
+        else {
+          Alert.alert('Error', 'Update failed.');
+        }
       }
     } catch (error) {
       console.error(error);
@@ -211,7 +216,13 @@ export default function UpdateAccount() {
         setNewPassword('');
       }
       else {
-        Alert.alert('Error', result.message || 'Update failed.');
+        if (result.message) {
+          Alert.alert('Error', result.message);
+        } 
+        else {
+          Alert.alert('Error', 'Update failed.');
+        }
+
       }
     } catch (error) {
       console.error(error);
@@ -285,7 +296,13 @@ export default function UpdateAccount() {
         setNewPassword('');
       }
       else {
-        Alert.alert('Error', result.message || 'Update failed.');
+        if (result.message) {
+          Alert.alert('Error', result.message);
+        } 
+        else {
+          Alert.alert('Error', 'Update failed.');
+        }
+
       }
     } catch (error) {
       console.error(error);
@@ -390,7 +407,7 @@ export default function UpdateAccount() {
         }
       }}
     >
-      <View style={{ flex: 1, padding: 20 }}>
+      <View style={updateaccountstyles.firstcontainer}>
         <Text style={homescreenstyles.title}>Update Account</Text>
 
         <SearchBar
@@ -407,57 +424,13 @@ export default function UpdateAccount() {
         filteredPasswords={filteredPasswords}
         handleSelectAccount={handleSelectAccount}
       />
-        {selectedAccount && (
-          <View style={updateaccountstyles.container}>
-            <Text style={updateaccountstyles.selectedlabel}>
-              Selected: {selectedAccount.account_name}
-            </Text>
-
-            <Text>Update Password</Text>
-            <TextInput
-              value={newPassword}
-              onChangeText={setNewPassword}
-              placeholder="Enter new password"
-            />
-            <Button title="Update Password" onPress={handleUpdatePassword} />
-
-            <Text style={updateaccountstyles.updatelabel}>Update Username</Text>
-            <TextInput
-              value={newUsername}
-              onChangeText={setNewUsername}
-              placeholder="Enter new username"
-            />
-            <Button title="Update Username" onPress={handleUpdateUsername} />
-
-            <Text style={updateaccountstyles.updatelabel}>Update Account Name</Text>
-            <TextInput
-              value={newName}
-              onChangeText={setNewName}
-              placeholder="Enter new account name"
-            />
-            <Button title="Update Account Name" onPress={handleUpdateName} />
-
-
-             <Text style={updateaccountstyles.updatelabel}>Update URL</Text>
-            <TextInput
-              value={newURL}
-              onChangeText={setNewURL}
-              placeholder="Enter new URL"
-            />
-            <Button title="Update URL" onPress={handleUpdateURL} />
-       
-          <Text style={updateaccountstyles.updatelabel}>Update Notes</Text>
-            <TextInput
-              value={newNotes}
-              onChangeText={setNewNotes}
-              placeholder="Enter new notes"
-            />
-            <Button title="Update Notes" onPress={handleUpdateNotes} />
-       
-       
-          </View>
-
-        )}
+      <UpdateAccountForm selectedAccount={selectedAccount} newPassword={newPassword} 
+      setNewPassword={setNewPassword} handleUpdatePassword={handleUpdatePassword} 
+      newUsername={newUsername} setNewUsername={setNewUsername} handleUpdateUsername={handleUpdateUsername } 
+       newName={newName} setNewName={setNewName } handleUpdateName={handleUpdateName } newURL={newURL} 
+       setNewURL={setNewURL } handleUpdateURL={handleUpdateURL} newNotes={newNotes} setNewNotes={setNewNotes } handleUpdateNotes={handleUpdateNotes} >
+       </UpdateAccountForm>
+        
       </View>
     </TouchableWithoutFeedback>
   );

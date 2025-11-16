@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Alert, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { homescreenstyles } from './styles/HomeScreenStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { retrievePassword } from '../utils/database';
 import { decrypt } from '../utils/encryption'; 
 import SearchBar from './components/SearchBar';
-import AccountCard from './components/AccountCard';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,6 +11,7 @@ import { RootStackParamList } from './App';
 import { updatePassword,updateAddDate,updateExpiryDate } from '../utils/database';
 import {generateRandomPassword} from './components/PasswordGenerator';
 import VaultAccountList from './components/VaultAccountList';
+import { vaultscreenstyles } from './styles/VaultScreenStyles';
 
 // VaultScreen navigation type
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
@@ -120,11 +119,7 @@ export default function VaultScreen() {
 
                 if(currentDate > expiryDate)
                 {
-                  Alert.alert(
-                    'Password Expired',
-                    `The password for "${item.password_id}" has expired. Please update it.`
-  
-                  );
+                  Alert.alert('Password Expired',`The password for "${item.password_id}" has expired. Please update it.`);
 
                   const newPassword = generateRandomPassword();
                   const newAddDate = new Date().toISOString().split('T')[0];
@@ -152,7 +147,12 @@ export default function VaultScreen() {
         setFilteredPasswords(decryptedData);
       } 
       else {
-        Alert.alert('Info', result.message || 'No passwords found.');
+        if (result.message) {
+          Alert.alert('Info', result.message);
+        } 
+        else {
+          Alert.alert('Info', 'No passwords found.');
+        }
       }
     } catch (err) {
       console.error(err);
@@ -167,19 +167,20 @@ export default function VaultScreen() {
     } 
     else {
         const query = searchQuery.toLowerCase();
-        const filtered = passwords.filter((p) => {
-        const nameMatch = p.account_name?.toLowerCase().includes(query);
-        const usernameMatch = p.account_username?.toLowerCase().includes(query);
-        const decryptedMatch = p.decrypted_pass?.toLowerCase().includes(query);
-        if(nameMatch || usernameMatch || decryptedMatch)
-        {
-          return true;
+        const filtered = [];
+
+        for (let i = 0; i < passwords.length; i++) {
+            const p = passwords[i];
+
+            const nameMatch = p.account_name?.toLowerCase().includes(query);
+            const usernameMatch = p.account_username?.toLowerCase().includes(query);
+            const decryptedMatch = p.decrypted_pass?.toLowerCase().includes(query);
+
+            if (nameMatch || usernameMatch || decryptedMatch) {
+              filtered.push(p);
+            }
         }
-        else
-        {
-          return false;
-        }
-      });
+
       setFilteredPasswords(filtered);
     }
   }, [searchQuery, passwords]);
@@ -197,9 +198,9 @@ export default function VaultScreen() {
         resetTimer();
       }}
     >
-      <View style={{ flex: 1, padding: 20 }}>
-        <Text style={homescreenstyles.title}>Welcome to Vault Screen</Text>
-        <Text style={homescreenstyles.subtitle}>
+      <View style={vaultscreenstyles.container}>
+        <Text style={vaultscreenstyles.title}>Welcome to Vault Screen</Text>
+        <Text style={vaultscreenstyles.subtitle}>
           Here is a list of all your credentials
         </Text>
 

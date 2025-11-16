@@ -1,17 +1,19 @@
 import { StyleSheet } from 'react-native';
 
 export const updateaccountstyles = StyleSheet.create({
-
-
-  container: {
+  firstcontainer: {
+     flex: 1, 
+     padding: 20
+  },
+  secondcontainer: {
      marginTop: 10, 
   },
   selectedlabel: { 
-    fontWeight: 'bold' 
-},
-updatelabel: { 
-    marginTop: 15 
-},
+      fontWeight: 'bold' 
+  },
+  updatelabel: { 
+      marginTop: 15 
+  },
   form: {
     backgroundColor: 'aquamarine',
     padding: 20,
