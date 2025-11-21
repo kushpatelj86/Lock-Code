@@ -1,4 +1,4 @@
-# ![LockCode Logo](./assets/logo.png) LockCode – Desktop Password Manager
+#  LockCode – Desktop Password Manager
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Built With React Native](https://img.shields.io/badge/Built%20With-React%20Native-blue)](https://reactnative.dev/)
