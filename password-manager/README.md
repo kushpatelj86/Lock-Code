@@ -1,50 +1,69 @@
-# Welcome to your Expo app 👋
+# ![LockCode Logo](./assets/logo.png) LockCode – Desktop Password Manager
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Built With React Native](https://img.shields.io/badge/Built%20With-React%20Native-blue)](https://reactnative.dev/)
+[![Electron](https://img.shields.io/badge/Electron-Yes-orange)](https://www.electronjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-LTS-brightgreen)](https://nodejs.org/)
 
-## Get started
+---
 
-1. Install dependencies
+## Overview
 
-   ```bash
-   npm install
-   ```
+**LockCode** is a secure desktop application designed to help users store, manage, and generate strong passwords safely. It uses strong encryption, secure authentication, and an intuitive interface. All passwords are encrypted locally — no cloud storage, no plaintext storage, no tracking.
 
-2. Start the app
+> **Note:** Users must create an account and sign in with their master password to access the vault and all features.
 
-   ```bash
-   npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Features
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **🔐 User Authentication** – Secure login using bcrypt-hashed master passwords  
+- **🛡️ AES-256-GCM Encryption** – All passwords encrypted before storage  
+- **🔑 Password Generator** – Generate strong, customizable passwords  
+- **📦 Account Management** – Add, edit, delete, and categorize accounts  
+- **📊 Password Strength Indicator** – Assess if passwords are weak, medium, or strong  
+- **📋 Secure Clipboard Copy** – Auto-clears after a short timeout  
+- **👁️ Show/Hide Toggle** – Reveal or hide stored passwords  
+- **🔍 Search & Filter** – Quickly find accounts by name, username, or keyword  
+- **🗄️ Local Secure Storage** – Encrypted SQLite3 database on your device  
+- **⏱️ Auto-Logout** – Locks the vault after inactivity  
+- **🎨 Clean UI** – React Native + Tailwind CSS interface  
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## Technologies Used
+
+- React Native  
+- Electron  
+- SQLite3  
+- AES-256-GCM Encryption  
+- bcrypt  
+- Tailwind CSS  
+- JavaScript  
+- Node.js  
+
+---
+
+## Installation
+
+### Prerequisites
+
+- Node.js installed  
+- Git installed  
+- Desktop OS:  macOS
+
+### Steps to Run Locally
 
 ```bash
-npm run reset-project
-```
+# Clone the repository
+git clone https://github.com/kushpatelj86/Lock-Code.git
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+# Navigate into the project directory
+cd Lock-Code
 
-## Learn more
+# Install dependencies
+npm install
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# Start the desktop application
+npm start
