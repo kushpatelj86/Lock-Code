@@ -62,8 +62,11 @@ git clone https://github.com/kushpatelj86/Lock-Code.git
 # Navigate into the project directory
 cd Lock-Code
 
+# Navigate to directory to run code
+cd password-manager
+
 # Install dependencies
 npm install
 
 # Start the desktop application
-npm start
+npx expo start
