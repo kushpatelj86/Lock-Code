@@ -18,17 +18,17 @@
 
 ## Features
 
-- ** User Authentication** – Secure login using bcrypt-hashed master passwords  
-- ** AES-256-GCM Encryption** – All passwords encrypted before storage  
-- ** Password Generator** – Generate strong, customizable passwords  
-- ** Account Management** – Add, edit, delete, and categorize accounts  
-- ** Password Strength Indicator** – Assess if passwords are weak, medium, or strong  
-- ** Secure Clipboard Copy** – Auto-clears after a short timeout  
-- ** Show/Hide Toggle** – Reveal or hide stored passwords  
-- ** Search & Filter** – Quickly find accounts by name, username, or keyword  
-- ** Local Secure Storage** – Encrypted SQLite3 database on your device  
-- ** Auto-Logout** – Locks the vault after inactivity  
-- ** Clean UI** – React Native + Tailwind CSS interface  
+- **User Authentication** – Secure login using bcrypt-hashed master passwords  
+- **AES-256-GCM Encryption** – All passwords encrypted before storage  
+- **Password Generator** – Generate strong, customizable passwords  
+- **Account Management** – Add, edit, delete, and categorize accounts  
+- **Password Strength Indicator** – Assess if passwords are weak, medium, or strong  
+- **Secure Clipboard Copy** – Auto-clears after a short timeout  
+- **Show/Hide Toggle** – Reveal or hide stored passwords  
+- **Search & Filter** – Quickly find accounts by name, username, or keyword  
+- **Local Secure Storage** – Encrypted SQLite3 database on your device  
+- **Auto-Logout** – Locks the vault after inactivity  
+- **Clean UI** – React Native + Tailwind CSS interface  
 
 ---
 
