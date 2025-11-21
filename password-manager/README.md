@@ -70,7 +70,7 @@ npm install
 
 # Start the desktop application
 npx expo start
-
+```
 
 
 ---
