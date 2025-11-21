@@ -70,3 +70,70 @@ npm install
 
 # Start the desktop application
 npx expo start
+
+
+
+---
+
+## Getting Started
+
+### Launching the Application
+- **Action:** Click on the Desktop Application icon.  
+- **Result:** Displays the **Login Page**.  
+- **Precondition:** User has access to the desktop.  
+- **Postcondition:** User is authenticated or prompted to create a new account.  
+
+### Account Creation
+- **Sign Up:** Clicking **Sign Up** redirects the user to the **Sign Up Page**.  
+- **Back to Login:** Users can return to the Login Page if they already have an account.  
+- **Postcondition:** User account is securely created or redirected to Login.
+
+### Logging In
+- **Action:** Enter your master credentials on the Login Page.  
+- **Postcondition:** User is authenticated and navigated to the **Home Page**.
+
+### Home Page Navigation
+- **Vault Access:** View all saved passwords.  
+- **Add Account:** Add new account credentials.  
+- **Precondition:** User is logged in.  
+- **Postcondition:** Relevant screen is displayed.
+
+---
+
+## Vault Features
+
+### Viewing Accounts
+- Displays all saved accounts with usernames and encrypted passwords.  
+
+### Search / Filter
+- Quickly find accounts using keywords or filters.  
+
+### Add / Edit / Delete Accounts
+- Add new accounts, modify existing account details, or delete accounts with confirmation.
+
+### Show / Hide Password
+- Toggle password visibility for convenience and security.
+
+### Copy to Clipboard
+- Copy username or password temporarily; clears automatically after a short timeout.
+
+---
+
+## Security Features
+
+### Password Generation
+- Generates strong and unique passwords based on optional rules (length, symbols, numbers).  
+
+### Password Strength Evaluation
+- Categorizes passwords as weak, medium, or strong with actionable suggestions.
+
+### Encryption & Storage
+- Passwords stored using **AES-256 GCM** encryption.  
+- Master password hashed with **bcrypt**.  
+- All credentials stored securely in an encrypted SQLite database.  
+
+### Automatic Logout
+- User is automatically logged out after a period of inactivity to ensure security.
+
+---
+
