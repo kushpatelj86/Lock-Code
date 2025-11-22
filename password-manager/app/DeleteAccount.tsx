@@ -172,9 +172,20 @@ export default function DeleteAccount() {
         for(let i = 0; i < passwords.length;i++)
         {
           const p = passwords[i];
-          const accountName = p.account_name?.toLowerCase() || '';
-          const username = p.account_username?.toLowerCase() || '';
-          const password = p.decrypted_pass?.toLowerCase() || '';
+          let accountName = "";
+          if (p.account_name) {
+            accountName = p.account_name.toLowerCase();
+          }
+
+          let username = "";
+          if (p.account_username) {
+            username = p.account_username.toLowerCase();
+          }
+
+          let password = "";
+          if (p.decrypted_pass) {
+            password = p.decrypted_pass.toLowerCase();
+          }
           if (accountName.includes(query) || username.includes(query) || password.includes(query))
           {
             password_list.push(p);

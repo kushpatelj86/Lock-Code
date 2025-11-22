@@ -36,11 +36,14 @@ const AUTO_LOGOUT_MS = 5 * 60 * 1000;
 export default function UpdateAccount() {
   const navigation = useNavigation<VaultScreenNavigationProp>();
   const timerRef = useRef<number | null>(null);
-
+  // Functional Requirement: Vault displays all stored passwords
   const [passwords, setPasswords] = useState<Password[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  // Functional Requirement: Search / Filter accounts
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
+  // Functional Requirement: View account details when selected
   const [selectedAccount, setSelectedAccount] = useState<Password | null>(null);
+  // Functional Requirement: Update account credentials
   const [newPassword, setNewPassword] = useState('');
   const [newUsername, setNewUsername] = useState('');
   const [newName, setNewName] = useState('');
@@ -48,10 +51,12 @@ export default function UpdateAccount() {
   const [newNotes, setNewNotes] = useState('');
 
   // Auto logout
+  // Functional Requirement: Logout user (manual or automatic)
   async function handleLogout(auto = false) {
     try {
       await AsyncStorage.removeItem('loggedInUser');
       await AsyncStorage.removeItem('loggedInUserId');
+      // Functional Requirement: Notify user of logout
 
       if (auto) 
       {
@@ -61,7 +66,7 @@ export default function UpdateAccount() {
       {
         Alert.alert('Logged out', 'You have been logged out successfully.');
       }
-
+      // Functional Requirement: Navigate back to Login after logout
       navigation.replace('LoginScreen');
     } catch (error) {
       console.error('Logout error:', error);
@@ -69,6 +74,7 @@ export default function UpdateAccount() {
     }
   }
 
+   // Functional Requirement: Reset auto-logout timer on user activity
   function resetTimer() {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -76,6 +82,7 @@ export default function UpdateAccount() {
     timerRef.current = setTimeout(() => handleLogout(true), AUTO_LOGOUT_MS);
   }
 
+    // Functional Requirement: Initialize auto-logout timer on mount
   useEffect(() => {
     resetTimer();
     return () => {
@@ -85,11 +92,12 @@ export default function UpdateAccount() {
     };
   }, []);
 
-  // Load passwords
+  // Functional Requirement: Load all passwords for the logged-in user
   useEffect(() => {
     getPasswords();
   }, []);
 
+   // Functional Requirement: Retrieve passwords and decrypt them securely
   async function getPasswords() {
     try {
       const storedUserId = await AsyncStorage.getItem('loggedInUserId');
@@ -106,14 +114,15 @@ export default function UpdateAccount() {
 
         for (const item of passwords) {
           try {
+            // Functional Requirement: Decrypt AES-encrypted password
             const decrypted_pass = await decrypt(item.encrypted_pass, item.iv);
             let crackTime = '';
-
+            // Functional Requirement: Evaluate password strength
             if (decrypted_pass) {
               const estimated = estimateCrackTime(decrypted_pass);
               crackTime = formatYears(estimated.years);
             }
-
+            // Functional Requirement: Notify user if password has expired
             if (item.expiry_date) {
               const currentDate = new Date();
               const expiryDate = new Date(item.expiry_date);
@@ -131,7 +140,7 @@ export default function UpdateAccount() {
             decryptedData.push({ ...item, decrypted_pass: 'Error decrypting', crackTime: '' });
           }
         }
-
+        // Functional Requirement: Display decrypted passwords in Vault
         setPasswords(decryptedData);
         setFilteredPasswords(decryptedData);
       } 
@@ -149,7 +158,7 @@ export default function UpdateAccount() {
       Alert.alert('Error', 'Failed to load passwords.');
     }
   }
-
+  // Functional Requirement: Select an account to view or edit its details
   async function handleSelectAccount(account: Password) {
     setSelectedAccount(account);
     setNewPassword('');
@@ -157,7 +166,7 @@ export default function UpdateAccount() {
     setNewName('');
   }
 
-  // Update handlers
+  // Functional Requirement: Update password securely
   async function handleUpdatePassword() {
     if (!newPassword || !selectedAccount) {
       Alert.alert('Error', 'Please select an account and enter a new password.');
@@ -177,6 +186,7 @@ export default function UpdateAccount() {
             break; 
           }
         }
+        // Functional Requirement: Update displayed password after modification
 
         setPasswords(updatedPasswords);
         Alert.alert('Success', 'Password updated!');
@@ -362,7 +372,7 @@ export default function UpdateAccount() {
 
 
 
-  // Search filter
+  // Functional Requirement: Search / Filter accounts based on input
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
@@ -396,6 +406,7 @@ export default function UpdateAccount() {
       setFilteredPasswords(results);
 }
   }, [searchQuery, passwords]);
+  // Functional Requirement: Clear search input and show all accounts
 
   function handleClear() {
     setSearchQuery('');
