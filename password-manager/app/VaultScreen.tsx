@@ -13,7 +13,7 @@ import {generateRandomPassword} from './components/PasswordGenerator';
 import VaultAccountList from './components/VaultAccountList';
 import { vaultscreenstyles } from './styles/VaultScreenStyles';
 
-// VaultScreen navigation type
+// Functional Requirement: VaultScreen navigation
 type VaultScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'VaultScreen'>;
 
 type Password = {
@@ -32,16 +32,18 @@ type Password = {
 };
 
 const AUTO_LOGOUT_MS = 5 * 60 * 1000;
+// Functional Requirement: Automatic logout after inactivity
 
 export default function VaultScreen() {
   const navigation = useNavigation<VaultScreenNavigationProp>();
   const timerRef = useRef<number | null>(null);
+  // Functional Requirement: Store loaded passwords
 
   const [passwords, setPasswords] = useState<Password[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPasswords, setFilteredPasswords] = useState<Password[]>([]);
 
-  // Logout function
+  // Functional Requirement: Logout user (manual or automatic)
   async function handleLogout(auto = false) {
     try {
       await AsyncStorage.removeItem('loggedInUser');
@@ -61,7 +63,7 @@ export default function VaultScreen() {
     }
   }
 
-  // Reset the auto-logout timer
+  // Functional Requirement: Reset auto-logout timer on user interaction
   function resetTimer() {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
@@ -72,7 +74,7 @@ export default function VaultScreen() {
     , AUTO_LOGOUT_MS);
   }
 
-  // Start timer on mount
+  // Functional Requirement: Start timer on screen mount
   useEffect(() => {
     resetTimer();
     return () => {
@@ -82,7 +84,7 @@ export default function VaultScreen() {
     };
   }, []);
 
-  // Load passwords from DB
+  // Functional Requirement: Load passwords from database
   useEffect(() => {
     getPasswords();
   }, []);
@@ -90,6 +92,7 @@ export default function VaultScreen() {
 
 
   
+  // Functional Requirement: Retrieve and decrypt stored passwords
 
   async function getPasswords() {
     try {
@@ -160,7 +163,7 @@ export default function VaultScreen() {
     }
   }
 
-  // Filter passwords based on search query
+  // Functional Requirement: Filter passwords based on search query
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setFilteredPasswords(passwords);
@@ -184,13 +187,14 @@ export default function VaultScreen() {
       setFilteredPasswords(filtered);
     }
   }, [searchQuery, passwords]);
+  // Functional Requirement: Clear search query
 
   function handleClear() {
     setSearchQuery('');
     setFilteredPasswords(passwords);
   }
 
-  // Wrap the screen in a touchable to detect interactions and reset timer
+  // Functional Requirement: Wrap UI in touchable to reset auto-logout timer
   return (
     <TouchableWithoutFeedback
       onPress={() => {

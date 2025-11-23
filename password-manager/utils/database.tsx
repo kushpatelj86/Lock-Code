@@ -1,6 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import { hashPassword, generateSalt } from './hashing';
 import { encrypt } from './encryption';
+// Functional Requirement: Create USER table in database
 
 export function createUserTable() {
   console.log('Dropping and creating USER table...');
@@ -25,6 +26,7 @@ export function createUserTable() {
     console.error('Error creating USER table', error);
   }
 }
+// Functional Requirement: Create PASSWORD table in database
 
 export function createPasswordTable() {
   console.log('Dropping and creating passwords table...');
@@ -55,6 +57,7 @@ export function createPasswordTable() {
     console.error('Error creating PASSWORD table', error);
   }
 }
+// Functional Requirement: Initialize database with USER and PASSWORD tables
 
 export async function initDatabase() {
   console.log('Initializing database...');
@@ -63,6 +66,7 @@ export async function initDatabase() {
   console.log('Database initialization complete');
 }
 
+// Functional Requirement: Insert new master user into database
 
 export async function insertMasterUser(
   username: string,
@@ -84,6 +88,7 @@ export async function insertMasterUser(
     console.error("Username already exists:", username);
     return { success: false, message: "Username already exists" };
   }
+  // Functional Requirement: Generate salt and hash master password
 
   console.log('Generating salt and hashing password...');
   const salt = generateSalt();
@@ -105,6 +110,7 @@ export async function insertMasterUser(
     return { success: false, message: "User failed to be created" };
   }
 }
+// Functional Requirement: Verify master user login
 
 export async function verifyMasterUser(username: string, master_password: string) {
   console.log('Verifying user:', username);
@@ -148,6 +154,7 @@ export async function verifyMasterUser(username: string, master_password: string
     return { success: false, message: 'Login failed due to error' };
   }
 }
+// Functional Requirement: Insert new password for user
 
 export async function insertPassword(
   userId: number,
@@ -167,11 +174,13 @@ export async function insertPassword(
     `SELECT * FROM PASSWORD WHERE user_id = ? AND account_username = ?`,
     [userId, accountUsername]
   );
+  // Functional Requirement: Check for existing account for this user
 
   if (existing) {
     console.error("Account already exists for this user:", accountUsername);
     return { success: false, message: "Account already exists" };
   }
+  // Functional Requirement: Encrypt password before storing
 
 const { encrypted, iv } = await encrypt(encryptedPassword);
 
@@ -191,6 +200,7 @@ const { encrypted, iv } = await encrypt(encryptedPassword);
   }
 }
 
+// Functional Requirement: Retrieve all passwords for user
 
 export async function retrievePassword(userId: number) {
   const db = SQLite.openDatabaseSync('password_manager.db');
@@ -216,6 +226,7 @@ export async function retrievePassword(userId: number) {
   }
 }
 
+// Functional Requirement: Update encrypted password for a user
 
 export async function updatePassword(  userid: number,passwordid: number,password: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
@@ -243,6 +254,7 @@ export async function updatePassword(  userid: number,passwordid: number,passwor
 }
 
 
+// Functional Requirement: Update account username for a user
 
 export async function updateUsername(userid: number,passwordid: number, username: string) {
   const db = SQLite.openDatabaseSync('password_manager.db');
