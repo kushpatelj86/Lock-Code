@@ -263,7 +263,7 @@ export default function DeleteAccount() {
           }}
         >
           <View style={DeleteAccountStyles.container}>
-            <Text style={homescreenstyles.title}>Update Account</Text>
+            <Text style={homescreenstyles.title}>Delete Account</Text>
     
             <SearchBar
               value={searchQuery}

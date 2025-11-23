@@ -62,4 +62,8 @@ notesInput:{
     marginVertical: 20,
     alignSelf: 'center',
   },
+  strengthEvaulator :{
+     marginBottom: 10,
+      color: 'green',
+  }
 });

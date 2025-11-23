@@ -6,6 +6,7 @@ import { insertPassword } from '../utils/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { estimateCrackTime, formatYears } from './components/PasswordStrength';
 import { generateRandomPassword } from './components/PasswordGenerator';
+import StrengthEvaulatorComponent from './components/StrengthEvaulatorComponent';
 
 export default function AddAccount() {
   // Functional Requirement: Add / Edit / Delete Accounts
@@ -167,11 +168,7 @@ export default function AddAccount() {
 
         {/* Functional Requirement: Password Strength Evaluation
             The system shall provide feedback on estimated password crack time. */}
-        {password.length > 0 && (
-          <Text style={{ marginBottom: 10, color: 'green' }}>
-            Estimated crack time: {crackTime}
-          </Text>
-        )}
+        <StrengthEvaulatorComponent password={password} crackTime={crackTime}></StrengthEvaulatorComponent>
         <Text style={AddAccountStyles.label}>Notes (optional)</Text>
         <TextInput value={notes} onChangeText={setNotes} style={AddAccountStyles.input} />
 
