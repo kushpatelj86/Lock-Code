@@ -137,3 +137,23 @@ npx expo start
 
 ---
 
+## Future Enhancements
+
+Future enhancements for LockCode will focus on improving security, expanding features, and enhancing long-term maintainability while keeping the app lightweight and local-first.
+- Biometric unlock (Touch ID / Face ID)
+- Two-factor authentication (2FA)
+- Encrypted optional cloud backups
+- Breach monitoring integrations
+- Hardware security key support
+- Stronger key-derivation algorithms
+- Secure notes
+- Password history tracking
+- Customizable tags and advanced filtering
+- Browser auto-fill extension
+- Improved account organization
+- Detection of reused or weak patterns
+- Automatic account categorization
+- Adaptive password suggestions
+- Migration to TypeScript
+- Modular encryption services
+- Automated database migrations
