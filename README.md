@@ -9,7 +9,7 @@
 
 ## Overview
 
-**LockCode** is a secure desktop application designed to help users store, manage, and generate strong passwords safely. It uses strong encryption, secure authentication, and an intuitive interface. All passwords are encrypted locally — no cloud storage, no plaintext storage, no tracking.
+**LockCode** is a secure desktop application designed to help users store, manage, and generate strong passwords safely. It uses strong encryption, secure authentication, and an intuitive interface. All passwords are encrypted locally, no cloud storage, no plaintext storage, no tracking.
 
 > **Note:** Users must create an account and sign in with their master password to access the vault and all features.
 
