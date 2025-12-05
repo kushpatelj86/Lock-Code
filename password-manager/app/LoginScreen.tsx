@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from './App';
 import { loginStyles } from './styles/LoginScreenStyles'; 
 import { verifyMasterUser } from '../utils/database'; 
+import  LoginLoading from './components/LoginLoading'; 
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -125,11 +126,7 @@ export default function LoginScreen() {
             style={loginStyles.button}
             disabled={loading}
           >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={loginStyles.buttonText}>Login</Text>
-            )}
+            {<LoginLoading loading={loading}/>}
           </TouchableOpacity>
 
           <TouchableOpacity onPress={navigateToSignUp} style={loginStyles.button}>
