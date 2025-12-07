@@ -78,25 +78,16 @@ npx expo start
 ## Getting Started
 
 ### Launching the Application
-- **Action:** Click on the Desktop Application icon.  
-- **Result:** Displays the **Login Page**.  
-- **Precondition:** User has access to the desktop.  
-- **Postcondition:** User is authenticated or prompted to create a new account.  
+- Click on the Desktop Application icon. Displays the Login Page. User has access to the desktop. User is authenticated or prompted to create a new account.  
 
 ### Account Creation
-- **Sign Up:** Clicking **Sign Up** redirects the user to the **Sign Up Page**.  
-- **Back to Login:** Users can return to the Login Page if they already have an account.  
-- **Postcondition:** User account is securely created or redirected to Login.
+- Clicking the Sign Up Page redirects the user to the Sign Up Page. Users can return to the Login Page if they already have an account. User account is securely created or redirected to Login.
 
 ### Logging In
-- **Action:** Enter your master credentials on the Login Page.  
-- **Postcondition:** User is authenticated and navigated to the **Home Page**.
+- Enter your master credentials on the Login Page. User is authenticated and navigated to the Home Page.
 
 ### Home Page Navigation
-- **Vault Access:** View all saved passwords.  
-- **Add Account:** Add new account credentials.  
-- **Precondition:** User is logged in.  
-- **Postcondition:** Relevant screen is displayed.
+-  View all saved passwords. Add new account credentials. User is logged in. Relevant screen is displayed.
 
 ---
 
@@ -144,16 +135,13 @@ Future enhancements for LockCode will focus on improving security, expanding fea
 - Two-factor authentication (2FA)
 - Encrypted optional cloud backups
 - Breach monitoring integrations
+- AI-recommended password suggestions
 - Hardware security key support
 - Stronger key-derivation algorithms
 - Secure notes
 - Password history tracking
 - Customizable tags and advanced filtering
-- Browser auto-fill extension
 - Improved account organization
 - Detection of reused or weak patterns
 - Automatic account categorization
 - Adaptive password suggestions
-- Migration to TypeScript
-- Modular encryption services
-- Automated database migrations
