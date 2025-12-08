@@ -21,7 +21,7 @@
 - **User Authentication** – Secure login using bcrypt-hashed master passwords  
 - **AES-256-GCM Encryption** – All passwords encrypted before storage  
 - **Password Generator** – Generate strong, customizable passwords  
-- **Account Management** – Add, edit, delete, and categorize accounts  
+- **Account Management** – Add, edit, delete, and categorise accounts  
 - **Password Strength Indicator** – Assess if passwords are weak, medium, or strong  
 - **Secure Clipboard Copy** – Auto-clears after a short timeout  
 - **Show/Hide Toggle** – Reveal or hide stored passwords  
@@ -78,25 +78,16 @@ npx expo start
 ## Getting Started
 
 ### Launching the Application
-- **Action:** Click on the Desktop Application icon.  
-- **Result:** Displays the **Login Page**.  
-- **Precondition:** User has access to the desktop.  
-- **Postcondition:** User is authenticated or prompted to create a new account.  
+- Click on the Desktop Application icon. Displays the Login Page. User has access to the desktop. User is authenticated or prompted to create a new account.  
 
 ### Account Creation
-- **Sign Up:** Clicking **Sign Up** redirects the user to the **Sign Up Page**.  
-- **Back to Login:** Users can return to the Login Page if they already have an account.  
-- **Postcondition:** User account is securely created or redirected to Login.
+- Clicking Sign Up redirects the user to the Sign Up Page. Users can return to the Login Page if they already have an account. User account is securely created or redirected to Login.
 
 ### Logging In
-- **Action:** Enter your master credentials on the Login Page.  
-- **Postcondition:** User is authenticated and navigated to the **Home Page**.
+- Enter your master credentials on the Login Page. User is authenticated and navigated to the **Home Page**.
 
 ### Home Page Navigation
-- **Vault Access:** View all saved passwords.  
-- **Add Account:** Add new account credentials.  
-- **Precondition:** User is logged in.  
-- **Postcondition:** Relevant screen is displayed.
+- View all saved passwords. Add new account credentials. User is logged in. The relevant screen is displayed.
 
 ---
 
@@ -128,9 +119,9 @@ npx expo start
 - Categorizes passwords as weak, medium, or strong with actionable suggestions.
 
 ### Encryption & Storage
-- Passwords stored using **AES-256 GCM** encryption.  
-- Master password hashed with **bcrypt**.  
-- All credentials stored securely in an encrypted SQLite database.  
+- Passwords stored using AES-256 GCM encryption.  
+- Master password hashed with bcrypt.  
+- All credentials are stored securely in an encrypted SQLite database.  
 
 ### Automatic Logout
 - User is automatically logged out after a period of inactivity to ensure security.
@@ -142,9 +133,9 @@ npx expo start
 Future enhancements for LockCode will focus on improving security, expanding features, and enhancing long-term maintainability while keeping the app lightweight and local-first.
 - Biometric unlock (Touch ID / Face ID)
 - Two-factor authentication (2FA)
+- AI-Powered Password Recommendation
 - Encrypted optional cloud backups
 - Breach monitoring integrations
-- Hardware security key support
 - Stronger key-derivation algorithms
 - Secure notes
 - Password history tracking
@@ -154,6 +145,3 @@ Future enhancements for LockCode will focus on improving security, expanding fea
 - Detection of reused or weak patterns
 - Automatic account categorization
 - Adaptive password suggestions
-- Migration to TypeScript
-- Modular encryption services
-- Automated database migrations
